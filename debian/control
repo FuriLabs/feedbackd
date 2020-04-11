@@ -15,7 +15,7 @@ Build-Depends:
  meson,
  pkg-config,
  valac,
-Standards-Version: 4.4.0
+Standards-Version: 4.5.0
 Homepage: https://source.puri.sm/Librem5/feedbackd
 
 Package: feedbackd
