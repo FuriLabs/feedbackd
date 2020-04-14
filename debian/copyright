@@ -7,7 +7,9 @@ Copyright: 2020 Purism SPC
 License: GPL-3+
 
 Files: debian/*
-Copyright: 2020 Purism SPC
+Copyright:
+ 2020 Purism SPC
+ 2020 Arnaud Ferraris <arnaud.ferraris@gmail.com>
 License: GPL-3+
 
 Files: debian/feedbackd.udev
