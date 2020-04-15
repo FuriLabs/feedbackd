@@ -25,7 +25,7 @@ Architecture: any
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
- feedbackd-common (>= ${binary:Version}),
+ feedbackd-common (>= ${source:Version}),
  sound-theme-freedesktop,
 Description: DBus service for haptic/visual/audio feedback
  Feedbackd is a DBus activated daemon that provides haptic/
@@ -34,7 +34,7 @@ Description: DBus service for haptic/visual/audio feedback
  This package contains the daemon.
 
 Package: feedbackd-common
-Architecture: any
+Architecture: all
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
@@ -46,7 +46,7 @@ Description: DBus service for haptic/visual/audio feedback
  Feedbackd is a DBus activated daemon that provides haptic/
  visual/audio feedback based on events.
  .
- This package contains the shared files.
+ This package contains the architecture-independent shared files.
 
 Package: libfeedback-0.0-0
 Architecture: any
