@@ -1,3 +1,10 @@
+feedbackd (0.0.0+git20200420-1) unstable; urgency=medium
+
+  * New upstream release
+  * debian: fix libfeedback symbols file
+
+ -- Arnaud Ferraris <arnaud.ferraris@gmail.com>  Mon, 20 Apr 2020 15:35:26 +0200
+
 feedbackd (0.0.0+git20200305-1) unstable; urgency=medium
 
   * Initial Debian release (Closes: #956682)
