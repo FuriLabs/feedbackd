@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Arnaud Ferraris <arnaud.ferraris@gmail.com>
 Build-Depends:
  dbus,
- debhelper-compat (= 12),
+ debhelper-compat (= 13),
  dh-sequence-gir,
  gtk-doc-tools,
  libgirepository1.0-dev,
