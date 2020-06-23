@@ -1,3 +1,14 @@
+feedbackd (0.0.0+git20200527-1) unstable; urgency=medium
+
+  [ Federico Ceratto ]
+  * Bump debhelper from old 12 to 13.
+    Fixes: lintian: package-uses-old-debhelper-compat-version
+
+  [ Arnaud Ferraris ]
+  * New upstream version 0.0.0+git20200527
+
+ -- Arnaud Ferraris <arnaud.ferraris@gmail.com>  Wed, 24 Jun 2020 01:34:19 +0200
+
 feedbackd (0.0.0+git20200420-1) unstable; urgency=medium
 
   * New upstream release
