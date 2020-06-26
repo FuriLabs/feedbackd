@@ -2,7 +2,8 @@ Source: feedbackd
 Section: x11
 Priority: optional
 Maintainer: DebianOnMobile Maintainers <debian-on-mobile-maintainers@alioth-lists.debian.net>
-Uploaders: Arnaud Ferraris <arnaud.ferraris@gmail.com>
+Uploaders: Arnaud Ferraris <arnaud.ferraris@gmail.com>,
+ Guido Günther <agx@sigxcpu.org>,
 Build-Depends:
  dbus,
  debhelper-compat (= 13),
