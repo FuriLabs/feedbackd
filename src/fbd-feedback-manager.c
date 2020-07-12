@@ -9,6 +9,7 @@
 #include "lfb-names.h"
 #include "fbd.h"
 #include "fbd-dev-vibra.h"
+#include "fbd-dev-leds.h"
 #include "fbd-event.h"
 #include "fbd-feedback-vibra.h"
 #include "fbd-feedback-manager.h"
@@ -48,6 +49,7 @@ typedef struct _FbdFeedbackManager {
   GUdevClient *client;
   FbdDevVibra *vibra;
   FbdDevSound *sound;
+  FbdDevLeds  *leds;
 } FbdFeedbackManager;
 
 static void fbd_feedback_manager_feedback_iface_init (LfbGdbusFeedbackIface *iface);
@@ -69,21 +71,20 @@ device_changes (FbdFeedbackManager *self, gchar *action, GUdevDevice *device,
   if (g_strcmp0 (action, "remove") == 0 && self->vibra) {
     GUdevDevice *dev = fbd_dev_vibra_get_device (self->vibra);
 
-    if (g_strcmp0 (g_udev_device_get_sysfs_path(dev),
+    if (g_strcmp0 (g_udev_device_get_sysfs_path (dev),
 		   g_udev_device_get_sysfs_path (device)) == 0) {
-      g_debug ("Vibra device %s got remove", g_udev_device_get_sysfs_path (dev));
+      g_debug ("Vibra device %s got removed", g_udev_device_get_sysfs_path (dev));
       g_clear_object (&self->vibra);
     }
-  } else if (g_strcmp0 (action, "add") == 0 || !self->vibra) {
+  } else if (g_strcmp0 (action, "add") == 0) {
     if (!g_strcmp0 (g_udev_device_get_property (device, "FEEDBACKD_TYPE"), "vibra")) {
       g_autoptr (GError) err = NULL;
 
       g_debug ("Found hotplugged vibra device at %s", g_udev_device_get_sysfs_path (device));
+      g_clear_object (&self->vibra);
       self->vibra = fbd_dev_vibra_new (device, &err);
-      if (!self->vibra) {
+      if (!self->vibra)
 	g_warning ("Failed to init vibra device: %s", err->message);
-	g_clear_error (&err);
-      }
     }
   }
 }
@@ -141,6 +142,12 @@ init_devices (FbdFeedbackManager *self)
   }
   if (!self->vibra)
     g_debug ("No vibra capable device found");
+
+  self->leds = fbd_dev_leds_new (&err);
+  if (!self->leds) {
+    g_debug ("Failed to init leds device: %s", err->message);
+    g_clear_error (&err);
+  }
 
   self->sound = fbd_dev_sound_new (&err);
   if (!self->sound) {
@@ -204,6 +211,34 @@ on_feedbackd_setting_changed (FbdFeedbackManager *self,
   fbd_feedback_manager_set_profile (self, profile);
 }
 
+static FbdFeedbackProfileLevel
+get_max_level (FbdFeedbackProfileLevel global_level,
+               FbdFeedbackProfileLevel app_level,
+               FbdFeedbackProfileLevel event_level)
+{
+  FbdFeedbackProfileLevel level;
+
+  /* Individual events and apps can select lower levels than the global level but not higher ones */
+  level = global_level > app_level ? app_level : global_level;
+  level = level > event_level ? event_level : level;
+  return level;
+}
+
+static gboolean
+parse_hints (GVariant *hints, FbdFeedbackProfileLevel *level)
+{
+  const gchar *profile;
+  gboolean found;
+  g_auto (GVariantDict) dict = G_VARIANT_DICT_INIT (NULL);
+
+  g_variant_dict_init (&dict, hints);
+  found = g_variant_dict_lookup (&dict, "profile", "&s", &profile);
+
+  if (level && found)
+    *level = fbd_feedback_profile_level (profile);
+  return TRUE;
+}
+
 static gboolean
 fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback *object,
                                               GDBusMethodInvocation *invocation,
@@ -216,7 +251,7 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback *object,
   FbdEvent *event;
   GSList *feedbacks, *l;
   gint event_id;
-  FbdFeedbackProfileLevel app_level, level;
+  FbdFeedbackProfileLevel app_level, level, hint_level = FBD_FEEDBACK_PROFILE_LEVEL_FULL;
 
   g_debug ("Event '%s' for '%s'", arg_event, arg_app_id);
 
@@ -239,6 +274,13 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback *object,
     return TRUE;
   }
 
+  if (!parse_hints (arg_hints, &hint_level)) {
+    g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR,
+                                           G_DBUS_ERROR_INVALID_ARGS,
+                                           "Invalid hints");
+    return TRUE;
+  }
+
   if (arg_timeout < -1)
     arg_timeout = -1;
 
@@ -247,11 +289,10 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback *object,
   event = fbd_event_new (event_id, arg_app_id, arg_event, arg_timeout);
   g_hash_table_insert (self->events, GUINT_TO_POINTER (event_id), event);
 
-  /* If user configured a lower feedback level for this app honor that */
   app_level = app_get_feedback_level (arg_app_id);
-  level = self->level > app_level ? app_level : self->level;
-  feedbacks = fbd_feedback_theme_lookup_feedback (self->theme, level, event);
+  level = get_max_level (self->level, app_level, hint_level);
 
+  feedbacks = fbd_feedback_theme_lookup_feedback (self->theme, level, event);
   if (feedbacks) {
     for (l = feedbacks; l; l = l->next) {
       FbdFeedbackBase *fb = l->data;
@@ -408,6 +449,14 @@ fbd_feedback_manager_get_dev_sound (FbdFeedbackManager *self)
   g_return_val_if_fail (FBD_IS_FEEDBACK_MANAGER (self), NULL);
 
   return self->sound;
+}
+
+FbdDevLeds *
+fbd_feedback_manager_get_dev_leds (FbdFeedbackManager *self)
+{
+  g_return_val_if_fail (FBD_IS_FEEDBACK_MANAGER (self), NULL);
+
+  return self->leds;
 }
 
 gboolean

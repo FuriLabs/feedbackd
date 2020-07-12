@@ -9,6 +9,7 @@
 #include "fbd-feedback-dummy.h"
 #include "fbd-feedback-profile.h"
 #include "fbd-feedback-sound.h"
+#include "fbd-feedback-led.h"
 #include "fbd-feedback-vibra-periodic.h"
 #include "fbd-feedback-vibra-rumble.h"
 
@@ -26,7 +27,7 @@ static GParamSpec *props[PROP_LAST_PROP];
 
 /**
  * SECTION:fbd-feedback-profile
- * @short_description: A single profile in a #FbdFeedback
+ * @short_description: A profile in a #FbdFeedbackTheme
  * @Title: FbdFeedbackProfile
  */
 
@@ -83,6 +84,7 @@ feedback_get_type (JsonNode *feedback_node)
 
   /* Ensure all feedback types so the json parsing can use them */
   g_type_ensure (FBD_TYPE_FEEDBACK_DUMMY);
+  g_type_ensure (FBD_TYPE_FEEDBACK_LED);
   g_type_ensure (FBD_TYPE_FEEDBACK_VIBRA_PERIODIC);
   g_type_ensure (FBD_TYPE_FEEDBACK_VIBRA_RUMBLE);
   g_type_ensure (FBD_TYPE_FEEDBACK_SOUND);

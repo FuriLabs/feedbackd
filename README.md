@@ -80,6 +80,7 @@ available feedback types are:
 - Sound (an audible sound from the sound naming spec)
 - VibraRumble: haptic motor rumbling
 - VibraPeriodic: periodic feedback from the haptic motor
+- Led: Feedback via blinking LEDs
 
 You can check the feedback theme and the classes (prefixed with Fbd)
 for available properties. Note that the feedback theme API (including
@@ -89,7 +90,7 @@ daemon.
 ## Profiles
 The profile determines which parts of the theme are in use:
 
-- `full`: Use configured events form the `full`, `quiet` and `silent` parts of
+- `full`: Use configured events from the `full`, `quiet` and `silent` parts of
   the feedback them.
 - `quiet`: Use `quiet` and `silent` part from of the feedback theme. This usually
   means no audio feedback.
@@ -101,9 +102,9 @@ It can be set via a GSetting
 ```sh
   gsettings set org.sigxcpu.feedbackd profile full
 ```
-## fbdcli
+## fbcli
 
-`fbdcli` can be used to trigger feedback for different events. Here are some examples:
+`fbcli` can be used to trigger feedback for different events. Here are some examples:
 
 ### Phone call
 Run feedbacks for event `phone-incoming-call` until explicitly stopped:
@@ -127,7 +128,7 @@ _build/cli/fbcli -t 10 -E alarm-clock-elapsed
 ```
 
 ## Per app profiles
-One can lower the feedback level of an individual application
+One can set the feedback profile of an individual application
 via `GSettings`. E.g. for an app with app id `sm.puri.Phosh`
 to set the profile to `quiet` do:
 

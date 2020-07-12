@@ -62,6 +62,7 @@ applications which will use the Feedback Theme Specification.
 - message-new-email:  The event used when a new email is received.
 - message-missed-email: The event used when an email  was received but not seen by the user.
 - message-missed-instant: The event used when a instant message was received but not seen by the user.
+- message-missed-notification: The event used when a notification was shown but not seen by the user.
 - message-missed-sms: The event used when a sms message was received but not seen by the user.
 - phone-incoming-call: This Event is used when a phone/voip call is coming in.
 - phone-missed-call: This Event is used when a phone/voip call is was incoming but not answered.
@@ -84,7 +85,8 @@ applications which will use the Feedback Theme Specification.
 
 ### Input Event
 
-- button-pressed:	The Event used when a button is pressed.
+- button-pressed:	The event used when a button is pressed.
+- button-released:  The event used when a button is released.
 - window-close:     The sound used when an existing window is closed.
 
 [Sound naming spec]: http://0pointer.de/public/sound-naming-spec.html
