@@ -1,0 +1,25 @@
+From dad11346b8bfd8b9a1aeaae6c816e9aa561bed03 Mon Sep 17 00:00:00 2001
+From: Arnaud Ferraris <arnaud.ferraris@gmail.com>
+Date: Sun, 12 Jul 2020 14:55:29 +0200
+Subject: [PATCH 3/3] fbd-ledctrl: fix typo
+
+---
+ src/fbd-ledctrl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/fbd-ledctrl.c b/src/fbd-ledctrl.c
+index b31ab43..9386403 100644
+--- a/src/fbd-ledctrl.c
++++ b/src/fbd-ledctrl.c
+@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
+     return FBD_LEDCTRL_ERR_TRIGGER;
+ 
+   if (group) {
+-    g_debug ("Setting permision of %s to %s", sysfs_path, group);
++    g_debug ("Setting permission of %s to %s", sysfs_path, group);
+     if (!set_perms (sysfs_path, trigger, group))
+       return FBD_LEDCTRL_ERR_PERMS;
+   }
+-- 
+2.27.0
+

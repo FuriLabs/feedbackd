@@ -7,10 +7,12 @@ libfeedback-0.0.so.0 libfeedback-0.0-0 #MINVER#
  lfb_event_end_reason_get_type@LIBFEEDBACK_0_0_0 0.0.0+git20200305
  lfb_event_get_end_reason@LIBFEEDBACK_0_0_0 0.0.0+git20200305
  lfb_event_get_event@LIBFEEDBACK_0_0_0 0.0.0+git20200305
+ lfb_event_get_feedback_profile@LIBFEEDBACK_0_0_0 0.0.0+git20200707
  lfb_event_get_state@LIBFEEDBACK_0_0_0 0.0.0+git20200305
  lfb_event_get_timeout@LIBFEEDBACK_0_0_0 0.0.0+git20200305
  lfb_event_get_type@LIBFEEDBACK_0_0_0 0.0.0+git20200305
  lfb_event_new@LIBFEEDBACK_0_0_0 0.0.0+git20200305
+ lfb_event_set_feedback_profile@LIBFEEDBACK_0_0_0 0.0.0+git20200707
  lfb_event_set_timeout@LIBFEEDBACK_0_0_0 0.0.0+git20200305
  lfb_event_state_get_type@LIBFEEDBACK_0_0_0 0.0.0+git20200305
  lfb_event_trigger_feedback@LIBFEEDBACK_0_0_0 0.0.0+git20200305
