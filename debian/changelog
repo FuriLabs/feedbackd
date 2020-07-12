@@ -1,3 +1,25 @@
+feedbackd (0.0.0+git20200707-1) unstable; urgency=medium
+
+  [ Guido Günther ]
+  * d/control: Add myself as uploader
+  * debian: Ship manpages
+  * debian: Setup leds via udev.
+    This allows feedbackd to set periodic feedback and makes usable
+    LED devices identifiable by feedbackd.
+
+  [ Arnaud Ferraris ]
+  * New upstream version 0.0.0+git20200707
+  * d/patches: remove custom manpage
+    Upstream created a manpage for this package, we don't need to provide
+    our own anymore.
+  * debian: add missing symbols
+  * d/patches: fix typos and manpage
+    Fixes: lintian: bad-whatis-entry
+    Fixes: lintian: spelling-error-in-binary
+    Fixes: lintian: typo-in-manual-page
+
+ -- Arnaud Ferraris <arnaud.ferraris@gmail.com>  Sun, 12 Jul 2020 16:44:45 +0200
+
 feedbackd (0.0.0+git20200527-1) unstable; urgency=medium
 
   [ Federico Ceratto ]
