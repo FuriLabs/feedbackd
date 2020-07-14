@@ -1,3 +1,11 @@
+feedbackd (0.0.0+git20200714-1) unstable; urgency=medium
+
+  * New upstream version 0.0.0+git20200714
+  * d/patches: remove upstreamed patches
+  * d/control: add Rules-Requires-Root
+
+ -- Arnaud Ferraris <arnaud.ferraris@gmail.com>  Tue, 14 Jul 2020 13:47:28 +0200
+
 feedbackd (0.0.0+git20200707-1) unstable; urgency=medium
 
   [ Guido Günther ]
