@@ -476,6 +476,14 @@ lfb_event_trigger_feedback_async (LfbEvent            *self,
   proxy = _lfb_get_proxy ();
   g_return_if_fail (LFB_GDBUS_IS_FEEDBACK (proxy));
 
+  if (self->handler_id == 0) {
+    self->handler_id = g_signal_connect_object (proxy,
+						"feedback-ended",
+						G_CALLBACK (on_feedback_ended),
+						self,
+						G_CONNECT_SWAPPED);
+  }
+
   data = g_new0 (LpfAsyncData, 1);
   data->task = g_task_new (self, cancellable, callback, user_data);
   data->event = g_object_ref (self);
@@ -500,7 +508,7 @@ lfb_event_trigger_feedback_async (LfbEvent            *self,
  * must call this function in the callback to free memory and receive any
  * errors which occurred.
  *
- * Returns: %TRUE if playing finished successfully
+ * Returns: %TRUE if triggering the feedbacks was successful
  */
 gboolean
 lfb_event_trigger_feedback_finish (LfbEvent      *self,
@@ -552,7 +560,10 @@ lfb_event_end_feedback (LfbEvent *self, GError **error)
  * must call this function in the callback to free memory and receive any
  * errors which occurred.
  *
- * Returns: %TRUE if playing finished successfully
+ * This does not mean that the feedbacks finished right away. Connect to the
+ * #LfbEvent::feedback-ended signal for this.
+ *
+ * Returns: %TRUE if ending the feedbacks was successful
  */
 gboolean
 lfb_event_end_feedback_finish (LfbEvent      *self,
