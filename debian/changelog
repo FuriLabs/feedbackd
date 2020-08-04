@@ -1,3 +1,10 @@
+feedbackd (0.0.0+git20200726-1) unstable; urgency=medium
+
+  * debian: udev: add support for PinePhone front LEDs
+  * New upstream version 0.0.0+git20200726
+
+ -- Arnaud Ferraris <arnaud.ferraris@gmail.com>  Tue, 04 Aug 2020 11:25:23 +0200
+
 feedbackd (0.0.0+git20200714-1) unstable; urgency=medium
 
   * New upstream version 0.0.0+git20200714
