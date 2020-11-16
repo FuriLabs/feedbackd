@@ -1,3 +1,17 @@
+feedbackd (0.0.0+git20201114-1) unstable; urgency=medium
+
+  [ Guido Günther ]
+  * udev: Update led matching for the librem5.
+    The names changed in device tree which tickles up into userspace.
+  * debian: Don't abuse the video group.
+    Use a separate group for users that should be able to access
+    the LED devices.
+
+  [ Arnaud Ferraris ]
+  * New upstream version 0.0.0+git20201114
+
+ -- Arnaud Ferraris <arnaud.ferraris@gmail.com>  Mon, 16 Nov 2020 10:16:11 +0100
+
 feedbackd (0.0.0+git20200726-1) unstable; urgency=medium
 
   * debian: udev: add support for PinePhone front LEDs
