@@ -21,9 +21,13 @@
 
 #define FEEDBACKD_SCHEMA_ID "org.sigxcpu.feedbackd"
 #define FEEDBACKD_KEY_PROFILE "profile"
+#define FEEDBACKD_THEME_VAR "FEEDBACK_THEME"
 
 #define APP_SCHEMA FEEDBACKD_SCHEMA_ID ".application"
 #define APP_PREFIX "/org/sigxcpu/feedbackd/application/"
+
+#define DEVICE_TREE_PATH "/sys/firmware/devicetree/base/compatible"
+#define DEVICE_NAME_MAX 1024
 
 
 /**
@@ -38,18 +42,18 @@
 typedef struct _FbdFeedbackManager {
   LfbGdbusFeedbackSkeleton parent;
 
-  GSettings *settings;
-  FbdFeedbackProfileLevel level;
-  FbdFeedbackTheme *theme;
-  guint next_id;
+  GSettings               *settings;
+  FbdFeedbackProfileLevel  level;
+  FbdFeedbackTheme        *theme;
+  guint                    next_id;
 
-  GHashTable *events;
+  GHashTable              *events;
 
   /* Hardware interaction */
-  GUdevClient *client;
-  FbdDevVibra *vibra;
-  FbdDevSound *sound;
-  FbdDevLeds  *leds;
+  GUdevClient             *client;
+  FbdDevVibra             *vibra;
+  FbdDevSound             *sound;
+  FbdDevLeds              *leds;
 } FbdFeedbackManager;
 
 static void fbd_feedback_manager_feedback_iface_init (LfbGdbusFeedbackIface *iface);
@@ -173,7 +177,7 @@ on_event_feedbacks_ended (FbdFeedbackManager *self, FbdEvent *event)
 
   g_return_if_fail (fbd_event_get_feedbacks_ended (event));
 
-  lfb_gdbus_feedback_emit_feedback_ended (LFB_GDBUS_FEEDBACK(self), event_id,
+  lfb_gdbus_feedback_emit_feedback_ended (LFB_GDBUS_FEEDBACK (self), event_id,
                                           fbd_event_get_end_reason (event));
 
   g_debug ("All feedbacks for event %d finished", event_id);
@@ -239,12 +243,12 @@ parse_hints (GVariant *hints, FbdFeedbackProfileLevel *level)
 }
 
 static gboolean
-fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback *object,
+fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback      *object,
                                               GDBusMethodInvocation *invocation,
-                                              const gchar *arg_app_id,
-                                              const gchar *arg_event,
-                                              GVariant *arg_hints,
-                                              gint arg_timeout)
+                                              const gchar           *arg_app_id,
+                                              const gchar           *arg_event,
+                                              GVariant              *arg_hints,
+                                              gint                   arg_timeout)
 {
   FbdFeedbackManager *self;
   FbdEvent *event;
@@ -298,8 +302,8 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback *object,
       FbdFeedbackBase *fb = l->data;
 
       if (fbd_feedback_is_available (FBD_FEEDBACK_BASE (fb))) {
-          fbd_event_add_feedback (event, fb);
-          found_fb = TRUE;
+        fbd_event_add_feedback (event, fb);
+        found_fb = TRUE;
       }
     }
     g_slist_free_full (feedbacks, g_object_unref);
@@ -316,7 +320,7 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback *object,
     fbd_event_run_feedbacks (event);
   } else {
     g_hash_table_remove (self->events, GUINT_TO_POINTER (event_id));
-    lfb_gdbus_feedback_emit_feedback_ended (LFB_GDBUS_FEEDBACK(self), event_id,
+    lfb_gdbus_feedback_emit_feedback_ended (LFB_GDBUS_FEEDBACK (self), event_id,
                                             FBD_EVENT_END_REASON_NOT_FOUND);
   }
 
@@ -325,9 +329,9 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback *object,
 }
 
 static gboolean
-fbd_feedback_manager_handle_end_feedback (LfbGdbusFeedback *object,
+fbd_feedback_manager_handle_end_feedback (LfbGdbusFeedback      *object,
                                           GDBusMethodInvocation *invocation,
-                                          guint event_id)
+                                          guint                  event_id)
 {
   FbdFeedbackManager *self;
   FbdEvent *event;
@@ -352,6 +356,52 @@ fbd_feedback_manager_handle_end_feedback (LfbGdbusFeedback *object,
   return TRUE;
 }
 
+static const gchar *
+find_themefile (void)
+{
+  gint i = 0;
+  gsize len;
+  const gchar *comp;
+
+  g_autoptr (GError) err = NULL;
+  gchar **xdg_data_dirs = (gchar **) g_get_system_data_dirs ();
+  g_autofree gchar *config_path = NULL;
+  g_autofree gchar *compatibles = NULL;
+
+  // Try to read the device name
+  if (g_file_test (DEVICE_TREE_PATH, (G_FILE_TEST_EXISTS))) {
+    g_debug ("Found device tree device compatible at %s", DEVICE_TREE_PATH);
+
+    // Check if feedbackd has a proper config available this device
+    if (!g_file_get_contents (DEVICE_TREE_PATH, &compatibles, &len, &err))
+      g_warning ("Unable to read: %s", err->message);
+
+    comp = compatibles;
+    while (comp - compatibles < len) {
+
+      // Iterate over $XDG_DATA_DIRS
+      for (i = 0; i < g_strv_length (xdg_data_dirs); i++) {
+        config_path = g_strconcat (xdg_data_dirs[i], "feedbackd/themes/", comp, ".json", NULL);
+        g_debug ("Searching for device specific themefile in %s", config_path);
+
+        // Check if file exist
+        if (g_file_test (config_path, (G_FILE_TEST_EXISTS))) {
+          g_debug ("Found themefile for this device at: %s", config_path);
+          return g_strdup (config_path);
+        }
+      }
+
+      // Next compatible
+      comp = strchr (comp, 0);
+      comp++;
+    }
+  }else  {
+    g_debug ("Device tree path does not exist: %s", DEVICE_TREE_PATH);
+  }
+
+  return NULL;
+}
+
 static void
 fbd_feedback_manager_constructed (GObject *object)
 {
@@ -361,14 +411,22 @@ fbd_feedback_manager_constructed (GObject *object)
 
   G_OBJECT_CLASS (fbd_feedback_manager_parent_class)->constructed (object);
 
-  themefile = g_getenv ("FEEDBACK_THEME");
+  // Overide themefile with environment variable if requested
+  themefile = g_getenv (FEEDBACKD_THEME_VAR);
+
+  // Search for device-specific configuration
+  if (!themefile)
+    themefile = find_themefile ();
+
+  // Fallback to default configuration if needed
   if (!themefile)
     themefile = FEEDBACKD_THEME_DIR "/default.json";
+  g_info ("Using themefile: %s", themefile);
 
   self->theme = fbd_feedback_theme_new_from_file (themefile, &err);
   if (!self->theme) {
     /* No point to carry on */
-    g_error ("Failed to load default theme: %s", err->message);
+    g_error ("Failed to load theme: %s", err->message);
   }
 
   g_signal_connect (self, "notify::profile", (GCallback)on_profile_changed, NULL);
