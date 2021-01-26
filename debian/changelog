@@ -1,3 +1,10 @@
+feedbackd (0.0.0+git20210125-1) unstable; urgency=medium
+
+  * d/gbp.conf: remove 'v' prefix from debian tags
+  * New upstream version 0.0.0+git20210125
+
+ -- Arnaud Ferraris <arnaud.ferraris@gmail.com>  Tue, 26 Jan 2021 18:41:53 +0100
+
 feedbackd (0.0.0+git20201114-1) unstable; urgency=medium
 
   [ Guido Günther ]
