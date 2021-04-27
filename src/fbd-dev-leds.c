@@ -56,6 +56,7 @@ static void
 fbd_dev_led_free (FbdDevLed *led)
 {
   g_object_unref (led->dev);
+  g_free (led);
 }
 
 static gboolean
@@ -93,8 +94,7 @@ initable_init (GInitable    *initable,
 {
   const gchar * const subsystems[] = { LED_SUBSYSTEM, NULL };
   FbdDevLeds *self = FBD_DEV_LEDS (initable);
-
-  g_autoptr (GList) leds;
+  g_autolist (GUdevDevice) leds = NULL;
   gboolean found = FALSE;
 
   self->client = g_udev_client_new (subsystems);
@@ -116,11 +116,13 @@ initable_init (GInitable    *initable,
        color LEDSs so go with fixed colors until the kernel gives us
        enough information */
     for (int i = 0; i <= FBD_FEEDBACK_LED_COLOR_LAST; i++) {
-      g_autofree gchar *color;
+      g_autofree char *color = NULL;
+      g_autofree char *enum_name = NULL;
       gchar *c;
 
-      c = strrchr (g_enum_to_string (FBD_TYPE_FEEDBACK_LED_COLOR, i), '_');
-      color = g_strdup (g_ascii_strdown (c+1, -1));
+      enum_name = g_enum_to_string (FBD_TYPE_FEEDBACK_LED_COLOR, i);
+      c = strrchr (enum_name, '_');
+      color = g_ascii_strdown (c+1, -1);
       if (g_strstr_len (name, -1, color)) {
         g_autoptr (GError) err = NULL;
         guint brightness = g_udev_device_get_sysfs_attr_as_int (dev, "max_brightness");
@@ -129,7 +131,7 @@ initable_init (GInitable    *initable,
           continue;
 
         led = g_malloc0 (sizeof(FbdDevLed));
-        led->dev = dev;
+        led->dev = g_object_ref (dev);
         led->color = i;
         led->max_brightness = brightness;
         path = g_udev_device_get_sysfs_path (dev);
@@ -139,9 +141,6 @@ initable_init (GInitable    *initable,
         break;
       }
     }
-
-    if (!led)
-      g_object_unref (dev);
   }
 
   /* TODO: listen for new leds via udev events */
