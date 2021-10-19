@@ -1,3 +1,15 @@
+feedbackd (0.0.0+git20211018-1) experimental; urgency=medium
+
+  [ Evangelos Ribeiro Tzaras ]
+  * d/control: Add json-glib-tools as build dependency.
+    This will make sure that the json theme file gets validated in CI.
+
+  [ Guido Günther ]
+  * New upstream git snapshot 0.0.0+git20211018
+  * d/control: Recommend gnome-desktop-schemas
+
+ -- Guido Günther <agx@sigxcpu.org>  Tue, 19 Oct 2021 13:18:31 +0200
+
 feedbackd (0.0.0+git20210426-2) unstable; urgency=medium
 
   * Upload to unstable
