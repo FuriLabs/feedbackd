@@ -1,3 +1,9 @@
+feedbackd (0.0.0+git20211018-2) unstable; urgency=medium
+
+  * Upload to unstable
+
+ -- Guido Günther <agx@sigxcpu.org>  Thu, 28 Oct 2021 15:39:05 +0200
+
 feedbackd (0.0.0+git20211018-1) experimental; urgency=medium
 
   [ Evangelos Ribeiro Tzaras ]
