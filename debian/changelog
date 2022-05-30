@@ -1,3 +1,9 @@
+feedbackd (0.0.0+git20220520-1) unstable; urgency=medium
+
+  * New upstream version
+
+ -- Arnaud Ferraris <arnaud.ferraris@gmail.com>  Thu, 26 May 2022 00:57:09 +0200
+
 feedbackd (0.0.0+git20220208-1) unstable; urgency=medium
 
   * New upstream version
