@@ -62,6 +62,7 @@ Section: libs
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
+Recommends: feedbackd (>= ${binary:Version})
 Description: Library for managing haptic/visual/audio feedback
  Feedbackd is a DBus activated daemon that provides haptic/
  visual/audio feedback based on events.
