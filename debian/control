@@ -13,7 +13,7 @@ Build-Depends:
  json-glib-tools,
  libgirepository1.0-dev,
  libglib2.0-dev,
- libgudev-1.0-dev (>= 232),
+ libgudev-1.0-dev,
  libgsound-dev,
  libjson-glib-dev,
  meson,
