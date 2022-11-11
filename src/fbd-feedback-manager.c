@@ -84,7 +84,7 @@ device_changes (FbdFeedbackManager *self, gchar *action, GUdevDevice *device,
       g_clear_object (&self->vibra);
     }
   } else if (g_strcmp0 (action, "add") == 0) {
-    if (!g_strcmp0 (g_udev_device_get_property (device, "FEEDBACKD_TYPE"), "vibra")) {
+    if (!g_strcmp0 (g_udev_device_get_property (device, FEEDBACKD_UDEV_ATTR), "vibra")) {
       g_autoptr (GError) err = NULL;
 
       g_debug ("Found hotplugged vibra device at %s", g_udev_device_get_sysfs_path (device));
@@ -139,7 +139,7 @@ init_devices (FbdFeedbackManager *self)
   for (l = devices; l != NULL; l = l->next) {
     GUdevDevice *dev = l->data;
 
-    if (!g_strcmp0 (g_udev_device_get_property (dev, "FEEDBACKD_TYPE"), "vibra")) {
+    if (!g_strcmp0 (g_udev_device_get_property (dev, FEEDBACKD_UDEV_ATTR), "vibra")) {
       g_debug ("Found vibra device");
       self->vibra = fbd_dev_vibra_new (dev, &err);
       if (!self->vibra) {
@@ -323,7 +323,7 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback      *object,
   FbdFeedbackManager *self;
   FbdEvent *event;
   GSList *feedbacks, *l;
-  gint event_id;
+  guint event_id;
   const gchar *sender;
   FbdFeedbackProfileLevel app_level, level, hint_level = FBD_FEEDBACK_PROFILE_LEVEL_FULL;
   gboolean found_fb = FALSE;
@@ -384,6 +384,8 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback      *object,
     found_fb = FALSE;
   }
 
+  lfb_gdbus_feedback_complete_trigger_feedback (object, invocation, event_id);
+
   if (found_fb) {
     g_signal_connect_object (event, "feedbacks-ended",
                              (GCallback) on_event_feedbacks_ended,
@@ -397,7 +399,6 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback      *object,
                                             FBD_EVENT_END_REASON_NOT_FOUND);
   }
 
-  lfb_gdbus_feedback_complete_trigger_feedback (object, invocation, event_id);
   return TRUE;
 }
 
