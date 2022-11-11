@@ -1,8 +1,19 @@
-feedbackd (0.0.1-1) UNRELEASED; urgency=medium
+feedbackd (0.0.1-1) unstable; urgency=medium
 
+  [ Evangelos Ribeiro Tzaras ]
+  * d/control: libfeedback-0.0-0 recommends feedbackd.
+    Users running the library typically want the daemon installed as well.
+
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since buster (oldstable)
+    * Build-Depends: Drop versioned constraint on libgudev-1.0-dev.
+    Changes-By: deb-scrub-obsolete
+
+  [ Guido Günther ]
   * New upstream release
+  * d/gbp.conf: Use upstream-vcs
 
- -- Guido Günther <agx@sigxcpu.org>  Fri, 11 Nov 2022 12:36:55 +0100
+ -- Guido Günther <agx@sigxcpu.org>  Fri, 11 Nov 2022 12:38:53 +0100
 
 feedbackd (0.0.0+git20220520-1) unstable; urgency=medium
 
