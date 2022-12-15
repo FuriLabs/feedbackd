@@ -1,3 +1,3 @@
 version=4
-opts=filenamemangle=s/.*\/feedbackd.*\.tar\.xz/feedbackd-$1\.tar\.xz/g \
-  https://source.puri.sm/Librem5/feedbackd/tags?sort=updated_desc .*/archive/v(\d\S+)/.*\.tar\.gz.*
+opts="pgpsigurlmangle=s%$%.asc%" https://storage.puri.sm/releases/@PACKAGE@/ \
+             @PACKAGE@@ANY_VERSION@@ARCHIVE_EXT@
