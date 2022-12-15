@@ -1,3 +1,9 @@
+feedbackd (0.0.2-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Guido Günther <agx@sigxcpu.org>  Thu, 15 Dec 2022 16:55:26 +0100
+
 feedbackd (0.0.1-1) unstable; urgency=medium
 
   [ Evangelos Ribeiro Tzaras ]
