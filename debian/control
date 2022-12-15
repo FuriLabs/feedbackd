@@ -19,6 +19,7 @@ Build-Depends:
  libjson-glib-dev,
  meson,
  pkg-config,
+ python3-docutils <!nodoc>,
  valac,
 Standards-Version: 4.6.0
 Homepage: https://source.puri.sm/Librem5/feedbackd
