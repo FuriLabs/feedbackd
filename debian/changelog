@@ -1,8 +1,18 @@
-feedbackd (0.0.2-1) UNRELEASED; urgency=medium
+feedbackd (0.0.2-1) unstable; urgency=medium
 
   * New upstream release
+  * debian: Upstream uses gi-docgen now
+  * Install manpages via dh_installman.
+    This supports the nodoc build profile
+  * d/control: Manpages use rst2man now
+  * autopkgtest: Run fbd-theme-validate
+  * Override privacy-breach-facebook lintian error.
+    It incorrectly gets tripped up by the LfbEvent class name.
+  * build: Add dbus sources to the lib dependency
+  * Switch main branch debian/latest
+  * Use upstream tarballs with signatures
 
- -- Guido Günther <agx@sigxcpu.org>  Thu, 15 Dec 2022 16:55:26 +0100
+ -- Guido Günther <agx@sigxcpu.org>  Thu, 15 Dec 2022 17:33:36 +0100
 
 feedbackd (0.0.1-1) unstable; urgency=medium
 
