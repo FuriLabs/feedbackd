@@ -10,23 +10,23 @@
 #include "gio/gio.h"
 
 static void
-test_gm_devicetree_get_compatibles (void)
+test_gm_device_tree_get_compatibles (void)
 {
   g_auto (GStrv) compatibles = NULL;
   GError *err = NULL;
 
   /* nonexistent */
-  compatibles = gm_devicetree_get_compatibles (TEST_DATA_DIR "/doesnotexist", &err);
+  compatibles = gm_device_tree_get_compatibles (TEST_DATA_DIR "/doesnotexist", &err);
   g_assert_null (compatibles);
   g_assert_error (err, G_IO_ERROR, G_IO_ERROR_NOT_FOUND);
   g_clear_error (&err);
 
   /* nonexistent, don't store error */
-  compatibles = gm_devicetree_get_compatibles (TEST_DATA_DIR "/doesnotexist", NULL);
+  compatibles = gm_device_tree_get_compatibles (TEST_DATA_DIR "/doesnotexist", NULL);
   g_assert_null (compatibles);
 
   /* Regular format */
-  compatibles = gm_devicetree_get_compatibles (TEST_DATA_DIR "/compatibles1", &err);
+  compatibles = gm_device_tree_get_compatibles (TEST_DATA_DIR "/compatibles1", &err);
   g_assert_no_error (err);
   g_assert_nonnull (compatibles);
   g_assert_cmpstr (compatibles[0], ==, "purism,librem5r4");
@@ -36,7 +36,7 @@ test_gm_devicetree_get_compatibles (void)
   g_strfreev (compatibles);
 
   /* empty file */
-  compatibles = gm_devicetree_get_compatibles (TEST_DATA_DIR "/compatibles2", &err);
+  compatibles = gm_device_tree_get_compatibles (TEST_DATA_DIR "/compatibles2", &err);
   g_assert_no_error (err);
   g_assert_nonnull (compatibles);
 }
@@ -47,7 +47,7 @@ main (gint argc, gchar *argv[])
 {
   g_test_init (&argc, &argv, NULL);
 
-  g_test_add_func ("/GM/devicetree/get-compatibles", test_gm_devicetree_get_compatibles);
+  g_test_add_func ("/Gm/device-tree/get-compatibles", test_gm_device_tree_get_compatibles);
 
   return g_test_run ();
 }

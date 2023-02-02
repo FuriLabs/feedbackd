@@ -8,14 +8,18 @@ If you need to build gmobile, get the source from
 
 ## Bundling the library
 
-gmobile is currently not meant to be used as a shared library. It should be
-embedded in your source tree as a git submodule instead:
+gmobile is currently not meant to be used as a shared library. It can be bundled
+in one of two ways:
+
+### As a git submodule
+
+To use it as a submodule add the submodule to git
 
 ```
 git submodule add https://gitlab.gnome.org/guidog/gmobile.git subprojects/gmobile
 ```
 
-Add this to your `meson.build`:
+And then add this to your `meson.build`:
 
 ```meson
 gmobile = subproject('gmobile',
@@ -29,4 +33,24 @@ gmobile = subproject('gmobile',
     'tests=false',
   ])
 gmobile_dep = gmobile.get_variable('gmobile_dep')
+```
+
+### As a meson subproject
+
+To use it as a meson subproject add this to `subprojects/gmobile.wrap`:
+
+```ini
+[wrap-git]
+directory=gmobile
+url=https://gitlab.gnome.org/guidog/gmobile.git
+revision=main
+depth=1
+```
+
+You can then use `gmobile_dep` in your mesn build files like:
+
+```meson
+gmobile = dependency('gmobile',
+                     fallback: ['gmobile', 'gmobile_dep'],
+			         native: true)
 ```
