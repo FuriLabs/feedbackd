@@ -141,7 +141,7 @@ gm_timeout_source_once_new (gulong timeout_ms)
  * `g_timeout_add_seconds_full` instead.
  *
  * Note that glib's `g_timeout_add_seconds()` doesn't take system
- * suspend/resume into accout: https://gitlab.gnome.org/GNOME/glib/-/issues/2739
+ * suspend/resume into account: https://gitlab.gnome.org/GNOME/glib/-/issues/2739
  *
  * Returns: the ID (greater than 0) of the event source.
  **/
@@ -188,7 +188,7 @@ gm_timeout_add_seconds_once_full (gint           priority,
  * `g_timeout_add_seconds` instead.
  *
  * Note that glib's `g_timeout_add_seconds()` doesn't take system
- * suspend/resume into accout: https://gitlab.gnome.org/GNOME/glib/-/issues/2739
+ * suspend/resume into account: https://gitlab.gnome.org/GNOME/glib/-/issues/2739
  *
  * Returns: the ID (greater than 0) of the event source.
  **/
