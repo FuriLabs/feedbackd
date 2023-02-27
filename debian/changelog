@@ -1,8 +1,9 @@
-feedbackd (0.1.0-1) UNRELEASED; urgency=medium
+feedbackd (0.1.0-1) experimental; urgency=medium
 
+  * Upload to experimetal
   * New upstream release
 
- -- Guido Günther <agx@sigxcpu.org>  Mon, 27 Feb 2023 17:29:15 +0100
+ -- Guido Günther <agx@sigxcpu.org>  Mon, 27 Feb 2023 17:31:48 +0100
 
 feedbackd (0.0.3-1) unstable; urgency=medium
 
