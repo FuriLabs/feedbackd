@@ -1,8 +1,13 @@
-feedbackd (0.2.1-1) UNRELEASED; urgency=medium
+feedbackd (0.2.1-1) unstable; urgency=medium
 
+  [ Evangelos Ribeiro Tzaras ]
+  * lfb-dev: Register documentation with doc-base (Closes: #1041411)
+
+  [ Guido Günther ]
   * New upstream release
+  * Install feedback-themes manpage (Closes: #1050762)
 
- -- Guido Günther <agx@sigxcpu.org>  Thu, 31 Aug 2023 11:57:22 +0200
+ -- Guido Günther <agx@sigxcpu.org>  Thu, 31 Aug 2023 12:04:54 +0200
 
 feedbackd (0.2.0-2) unstable; urgency=medium
 
