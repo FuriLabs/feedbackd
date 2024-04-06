@@ -49,32 +49,36 @@ set_led_brightness (const gchar *led_path, guint brightness) {
   brightness_str = g_strdup_printf ("%d", brightness);
   blink_str = g_strdup_printf ("%d", brightness > 0 ? 1 : 0);
 
-  fd = open (brightness_path, O_WRONLY);
-  if (fd == -1) {
-    g_warning ("Failed to open %s: %s", brightness_path, strerror (errno));
-  } else {
-    ret = write (fd, brightness_str, strlen (brightness_str));
-    if (ret == -1) {
-      g_warning ("Failed to write to %s: %s", brightness_path, strerror (errno));
+  if (g_file_test (brightness_path, G_FILE_TEST_EXISTS)) {
+    fd = open (brightness_path, O_WRONLY);
+    if (fd == -1) {
+      g_warning ("Failed to open %s: %s", brightness_path, strerror (errno));
     } else {
-      result = TRUE;
-    }
+      ret = write (fd, brightness_str, strlen (brightness_str));
+      if (ret == -1) {
+        g_warning ("Failed to write to %s: %s", brightness_path, strerror (errno));
+      } else {
+        result = TRUE;
+      }
 
-    close (fd);
+      close (fd);
+    }
   }
 
-
-  fd_blink = open (blink_path, O_WRONLY);
-  if (fd_blink == -1) {
-    g_warning ("Failed to open %s: %s", blink_path, strerror (errno));
-  } else {
-    ret_blink = write (fd_blink, blink_str, strlen (blink_str));
-    if (ret_blink == -1) {
-      g_warning ("Failed to write to %s: %s", blink_path, strerror (errno));
+  if (g_file_test (blink_path, G_FILE_TEST_EXISTS)) {
+    fd_blink = open (blink_path, O_WRONLY);
+    if (fd_blink == -1) {
+      g_warning ("Failed to open %s: %s", blink_path, strerror (errno));
     } else {
-      result = TRUE;
+      ret_blink = write (fd_blink, blink_str, strlen (blink_str));
+      if (ret_blink == -1) {
+        g_warning ("Failed to write to %s: %s", blink_path, strerror (errno));
+      } else {
+        result = TRUE;
+      }
+
+      close (fd_blink);
     }
-    close (fd_blink);
   }
 
   g_free (brightness_path);
