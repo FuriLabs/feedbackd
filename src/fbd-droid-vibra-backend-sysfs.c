@@ -49,30 +49,29 @@ static gboolean
 fbd_droid_vibra_backend_sysfs_on (FbdDroidVibraBackend *backend, int duration)
 {
   // Some devices need a bigger duration than what feedbackd gives
-  if (g_file_test("/usr/lib/droidian/device/vibrator-sysfs-multiplier", G_FILE_TEST_EXISTS)) {
+  if (g_file_test ("/usr/lib/droidian/device/vibrator-sysfs-multiplier", G_FILE_TEST_EXISTS)) {
     gchar *content = NULL;
     gsize length = 0;
     GError *error = NULL;
 
-    if (g_file_get_contents("/usr/lib/droidian/device/vibrator-sysfs-multiplier", &content, &length, &error)) {
-      int multiplier = atoi(content);
+    if (g_file_get_contents ("/usr/lib/droidian/device/vibrator-sysfs-multiplier", &content, &length, &error)) {
+      int multiplier = atoi (content);
 
       duration = duration * multiplier;
-      g_free(content);
+      g_free (content);
     } else {
       if (error != NULL)
-        g_error_free(error);
+        g_error_free (error);
     }
   }
 
   char duration_str[16];
   g_snprintf (duration_str, sizeof (duration_str), "%d", duration);
 
-  g_print("Vibration duration: %s\n", duration_str);
+  //g_print("Vibration duration: %s\n", duration_str);
 
-  if (!write_to_sysfs (SYSFS_DURATION_NODE, duration_str)) {
+  if (!write_to_sysfs (SYSFS_DURATION_NODE, duration_str))
     return FALSE;
-  }
 
   return write_to_sysfs (SYSFS_ACTIVATE_NODE, "1");
 }
@@ -80,9 +79,9 @@ fbd_droid_vibra_backend_sysfs_on (FbdDroidVibraBackend *backend, int duration)
 static gboolean
 fbd_droid_vibra_backend_sysfs_off (FbdDroidVibraBackend *backend)
 {
-  if (g_file_test("/usr/lib/droidian/device/vibrator-sysfs-multiplier", G_FILE_TEST_EXISTS)) {
+  if (g_file_test ("/usr/lib/droidian/device/vibrator-sysfs-multiplier", G_FILE_TEST_EXISTS))
     g_usleep(50000);
-  }
+
   return write_to_sysfs (SYSFS_ACTIVATE_NODE, "0");
 }
 
@@ -120,6 +119,6 @@ fbd_droid_vibra_backend_sysfs_init (FbdDroidVibraBackendSysfs *self)
 }
 
 FbdDroidVibraBackendSysfs *
-fbd_droid_vibra_backend_sysfs_new(GError **error) {
+fbd_droid_vibra_backend_sysfs_new (GError **error) {
   return g_object_new (FBD_TYPE_DROID_VIBRA_BACKEND_SYSFS, NULL);
 }
