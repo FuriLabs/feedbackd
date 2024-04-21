@@ -19,7 +19,7 @@ Build-Depends:
  libgsound-dev,
  libjson-glib-dev,
  meson,
- pkg-config,
+ pkgconf,
  python3-docutils <!nodoc>,
  valac,
 Standards-Version: 4.6.2
