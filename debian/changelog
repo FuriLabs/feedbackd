@@ -1,8 +1,13 @@
-feedbackd (0.3.0-1) UNRELEASED; urgency=medium
+feedbackd (0.3.0-1) unstable; urgency=medium
 
   * New upstream release
+  * Update build-deps and use shared gmobile
+  * Update symbols file
+  * Install NEWS and development docs
+  * Use pkgconf
+  * Fix lintian override
 
- -- Guido Günther <agx@sigxcpu.org>  Sun, 21 Apr 2024 13:58:54 +0200
+ -- Guido Günther <agx@sigxcpu.org>  Sun, 21 Apr 2024 18:28:47 +0200
 
 feedbackd (0.2.1-1) unstable; urgency=medium
 
