@@ -1,7 +1,9 @@
 /*
- * Copyright (C) 2022 Guido Günther
+ * Copyright (C) 2022 The Phosh Developers
  *
  * SPDX-License-Identifier: GPL-3-or-later
+ *
+ * Author: Guido Günther <agx@sigxcpu.org>
  */
 
 #define GMOBILE_USE_UNSTABLE_API
@@ -60,12 +62,18 @@ build_svg (GmDisplayPanel *panel)
     if (cutout) {
       const GmRect *bounds = gm_cutout_get_bounds (cutout);
       const char *name = gm_cutout_get_name (cutout) ?: "";
+      const char *cutout_path = gm_cutout_get_path (cutout);
+
+      if (cutout_path == NULL) {
+        g_warning ("Failed to get cutout path for '%s' - skipping", name);
+        continue;
+      }
 
       g_string_append_printf (svg,
     "        <!-- cutout %s -->\n"
     "        <path d=\"%s\" stroke=\"black\" stroke-width=\"2\" fill=\"none\" />\n",
                               name,
-                              gm_cutout_get_path (cutout));
+                              cutout_path);
       g_string_append_printf (svg,
     "        <!-- bbox of cutout %s -->\n"
     "        <rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\""
@@ -123,7 +131,7 @@ int main (int argc, char **argv)
     {"compatible", 'c', 0, G_OPTION_ARG_STRING_ARRAY, &compatibles_opt,
      "Device tree compatibles to use for panel lookup ", NULL},
     {"output", 'o', 0, G_OPTION_ARG_STRING, &output_file,
-     "Sleep for that many seconds", NULL},
+     "The output file name", NULL},
     {"svg", 's', 0, G_OPTION_ARG_NONE, &svg,
      "Output svg instead of html", NULL},
     {"version", 0, 0, G_OPTION_ARG_NONE, &version,
@@ -142,7 +150,7 @@ int main (int argc, char **argv)
   if (version)
     print_version ();
 
-  if (compatibles_opt && compatibles_opt) {
+  if (compatibles_opt && compatibles_opt[0]) {
     compatibles = g_strdupv (compatibles_opt);
   } else {
     compatibles = gm_device_tree_get_compatibles (NULL, &err);

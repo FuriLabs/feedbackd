@@ -1,5 +1,5 @@
 project('gmobile', 'c',
-        version: '0.0.1',
+        version: '0.1.0',
         license: 'LGPLv2.1+',
         meson_version: '>= 0.56.1',
         default_options: [ 'warning_level=1', 'buildtype=debugoptimized', 'c_std=gnu11' ],
@@ -58,6 +58,7 @@ if get_option('buildtype') != 'plain'
   test_c_args += '-fstack-protector-strong'
 endif
 
+epoll_dep = dependency('epoll-shim', required: false)
 glib_dep = dependency('glib-2.0', version: '>=2.66')
 gio_dep = dependency('gio-2.0', version: '>=2.66')
 json_glib_dep = dependency('json-glib-1.0', version: '>= 1.6.2',
@@ -80,7 +81,7 @@ config_h = configuration_data()
 config_h.set_quoted('GM_VERSION', meson.project_version())
 
 root_inc = include_directories('.')
-configure_file(
+gm_config_h = configure_file(
   output: 'gm-config.h',
   configuration: config_h,
 )
@@ -94,6 +95,7 @@ subdir('doc')
 summary({
     'Examples': get_option('examples'),
     'Tests': get_option('tests'),
+    'Introspection': get_option('introspection'),
     'Docmentation': get_option('gtk_doc'),
   },
   bool_yn: true,

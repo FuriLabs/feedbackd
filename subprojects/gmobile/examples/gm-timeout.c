@@ -35,13 +35,12 @@ print_now (void)
 }
 
 
-static gboolean
+static void
 on_timeout (gpointer data)
 {
   g_main_loop_quit (data);
 
   g_message ("Exiting main loop");
-  return G_SOURCE_REMOVE;
 }
 
 
@@ -75,7 +74,7 @@ int main (int argc, char **argv)
   loop = g_main_loop_new (NULL, FALSE);
 
   g_message ("Arming timer with %d seconds", seconds);
-  gm_timeout_add_seconds_once (seconds, (GSourceFunc)on_timeout, loop);
+  gm_timeout_add_seconds_once (seconds, on_timeout, loop);
 
   print_now ();
   g_main_loop_run (loop);

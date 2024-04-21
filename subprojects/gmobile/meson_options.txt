@@ -10,3 +10,5 @@ option('gtk_doc',
        type: 'boolean', value: false,
        description: 'Whether to generate the API reference')
 
+option('introspection', type: 'boolean', value: 'true',
+       description : 'Build introspection data (requires gobject-introspection)')

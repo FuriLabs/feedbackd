@@ -1,7 +1,9 @@
 /*
- * Copyright (C) 2022 Guido Günther <agx@sigxcpu.org>
+ * Copyright (C) 2022-2023 The Phosh Developers
  *
- * SPDX-License-Identifier: GPL-3-or-later
+ * SPDX-License-Identifier: LGPL-2.1-or-later
+ *
+ * Author: Guido Günther <agx@sigxcpu.org>
  */
 
 #include "gm-main.h"
@@ -12,6 +14,8 @@
  *
  * Call this function to initialize the library explicitly. This makes
  * the embedded device information available.
+ *
+ * Since: 0.0.1
  */
 void
 gm_init (void)
