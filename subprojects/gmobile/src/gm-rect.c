@@ -1,7 +1,9 @@
 /*
- * Copyright (C) 2022 Guido Günther
+ * Copyright (C) 2022 The Phosh Developers
  *
  * SPDX-License-Identifier: LGPL-2.1-or-later
+ *
+ * Author: Guido Günther <agx@sigxcpu.org>
  */
 
 #include "gm-rect.h"
@@ -16,6 +18,8 @@
  * A rectangle.
  *
  * Similar to GdkRectangle but we don't want to pull in gtk/gdk.
+ *
+ * Since: 0.0.1
  */
 
 static GmRect *

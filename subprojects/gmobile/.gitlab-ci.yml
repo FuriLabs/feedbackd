@@ -1,10 +1,18 @@
+include:
+ - project: 'guidog/meta-phosh'
+   ref: '04a85df2f3311f3012b6c49bf353b376ae0f32b2'
+   file: '/ci/phosh-common-jobs.yml'
+ - remote: 'https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/d03cddbcff35f26861429fc816c00323f48e99af/templates/ci-fairy.yml'
+
+image: debian:trixie
+
 stages:
   - build
   - tests
+  - package
   - deploy
 
 variables:
-  DIST: bookworm
   DEPS: >-
     ccache build-essential libglib2.0-dev libjson-glib-dev meson
     python3-toml python3-jinja2 python3-typogrify libgirepository1.0-dev git
@@ -26,7 +34,6 @@ before_script:
     ninja -C _build
 
 build-debian-gcc:
-  image: debian:bookworm
   stage: build
   variables:
     BUILD_OPTS: -Db_coverage=true --werror
@@ -39,7 +46,6 @@ build-debian-gcc:
 
 # TODO: move to prebuilt container
 doc:
-  image: debian:bookworm
   stage: build
   variables:
     BUILD_OPTS: >-
@@ -54,7 +60,6 @@ doc:
       - _doc/
 
 tests:
-  image: debian:bookworm
   stage: tests
   variables:
   needs: ['build-debian-gcc']
@@ -66,6 +71,26 @@ tests:
   artifacts:
     reports:
       junit: _build/meson-logs/testlog.junit.xml
+
+
+package-deb-debian-trixie:arm64:
+  stage: package
+  variables:
+    PHOSH_DOCKER_IMAGE: debian:trixie
+  extends: .phosh-build-debian-package
+  tags:
+    - aarch64
+
+render-display-info:
+  stage: tests
+  variables:
+  needs: ['build-debian-gcc']
+  script:
+    - tools/render-all
+  artifacts:
+    expose_as: 'Display panel html'
+    paths:
+      - _build/out/
 
 pages:
   stage: deploy

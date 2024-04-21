@@ -1,7 +1,9 @@
 /*
- * Copyright (C) 2022 Guido Günther <agx@sigxcpu.org>
+ * Copyright (C) 2022 The Phosh Developers
  *
  * SPDX-License-Identifier: LGPL-2.1-or-later
+ *
+ * Author: Guido Günther <agx@sigxcpu.org>
  */
 
 #pragma once

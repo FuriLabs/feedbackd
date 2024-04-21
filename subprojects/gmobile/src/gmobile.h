@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2022 Purism SPC
+ *               2022-2024 The Phosh Developers
  *
  * SPDX-License-Identifier: LGPL-2.1-or-later
  *
@@ -22,3 +23,4 @@
 #include "gm-error.h"
 #include "gm-main.h"
 #include "gm-timeout.h"
+#include "gm-util.h"

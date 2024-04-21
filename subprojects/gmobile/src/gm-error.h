@@ -10,6 +10,14 @@
 
 #include <glib.h>
 
+/**
+ * GmError:
+ * @GM_ERROR_PARSING_FAILED: Parsing of the given data failed.
+ *
+ * Error codes returned by gmobile functions.
+ *
+ * Since: 0.0.1
+ */
 typedef enum {
   GM_ERROR_PARSING_FAILED = 1,
 } GmError;

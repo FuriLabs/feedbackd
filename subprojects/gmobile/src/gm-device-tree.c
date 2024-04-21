@@ -1,7 +1,9 @@
 /*
- * Copyright (C) 2022 Guido Günther <agx@sigxcpu.org>
+ * Copyright (C) 2022 The Phosh Developers
  *
  * SPDX-License-Identifier: LGPL-2.1-or-later
+ *
+ * Author: Guido Günther <agx@sigxcpu.org>
  */
 
 #include "gm-device-tree.h"
@@ -35,6 +37,8 @@ get_env_compatibles (void)
  * separated list of compatibles which will be returned instead.
  *
  * Returns:(transfer full): compatible machine types or %NULL
+ *
+ * Since: 0.0.1
  */
 GStrv
 gm_device_tree_get_compatibles (const char *sysfs_root, GError **err)

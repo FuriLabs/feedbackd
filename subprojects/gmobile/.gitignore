@@ -1,0 +1,5 @@
+subprojects/json-glib/
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/*.log
+debian/tmp/
