@@ -1,8 +1,36 @@
+feedbackd 0.3.0
+---------------
+Released April 2024
+* Allow blessed apps (e.g. alarm clocks) to override the global
+  feedback level
+* Documentation, CI and packaging updates
+* Make it simpler to add new led types
+* Contributors:
+    * Guido Günther
+
+feedbackd 0.2.1
+---------------
+Released August 2023
+* Minor documentation updates
+* Contributors:
+    * Guido Günther
+
+feedbackd 0.2.0
+---------------
+Released April 2023
+* lfbevent: Add api to set app-id
+* lfbevent: Change signature of get_feedback_profile().
+  (API change but no known users)
+* Contributors:
+    * Guido Günther
+
 feedbackd 0.1.1
 ---------------
 Released March 2023
 * Fix test failure exposed by glib 2.76
 * Leak fixes
+* Contributors:
+    * Guido Günther
 
 feedbackd 0.1.0
 ---------------
