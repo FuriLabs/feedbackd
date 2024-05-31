@@ -1,3 +1,13 @@
+feedbackd (0.3.0-2) unstable; urgency=medium
+
+  * d/control: Fix package description
+  * doc: Add NEWS.  It's basically the upstream changelog
+  * doc: Add upstream README.
+    It contains useful information regarding configuration
+    (Closes: #1050601)
+
+ -- Guido Günther <agx@sigxcpu.org>  Fri, 31 May 2024 14:56:54 +0200
+
 feedbackd (0.3.0-1) unstable; urgency=medium
 
   * New upstream release
