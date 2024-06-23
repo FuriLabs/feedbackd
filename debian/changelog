@@ -1,3 +1,9 @@
+feedbackd (0.4.0-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Guido Günther <agx@sigxcpu.org>  Sun, 23 Jun 2024 09:14:23 +0200
+
 feedbackd (0.3.0-2) unstable; urgency=medium
 
   * d/control: Fix package description
