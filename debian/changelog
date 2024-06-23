@@ -3,6 +3,8 @@ feedbackd (0.4.0-1) unstable; urgency=medium
   * New upstream release
   * d/control: Build-depend on umockdev.
     Needed for the tests.
+  * d/control: Add breaks on older calls. We need a calls with
+    https://gitlab.gnome.org/GNOME/calls/-/merge_requests/734
 
  -- Guido Günther <agx@sigxcpu.org>  Sun, 23 Jun 2024 09:24:25 +0200
 

@@ -39,6 +39,8 @@ Depends:
  sound-theme-freedesktop,
 Recommends:
  gsettings-desktop-schemas,
+Breaks:
+ calls (<< 46.1),
 Description: DBus service for haptic/visual/audio feedback
  Feedbackd is a DBus activated daemon that provides haptic/
  visual/audio feedback based on events.
