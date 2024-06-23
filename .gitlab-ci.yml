@@ -1,6 +1,6 @@
 include:
- - remote: 'https://source.puri.sm/Librem5/librem5-ci/raw/master/librem5-pipeline-definitions.yml'
  - remote: 'https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/34039cd573a2df832d465bc9e4c5f543571f5241/templates/ci-fairy.yml'
+ - remote: 'https://gitlab.gnome.org/guidog/meta-phosh/-/raw/f3c92e90dcc0d65322888217429b75dd101bd0d3/ci/phosh-common-jobs.yml'
 
 stages:
  - build
@@ -21,8 +21,10 @@ workflow:
   before_script:
     - export DEBIAN_FRONTEND=noninteractive
     - apt-get -y update
+    - apt-get -y upgrade
     - apt-get -y build-dep .
-    - apt-get -y install gcovr git
+    - '[ -z "${EXTRA_PKGS}" ] || echo "Extra packages: ${EXTRA_PKGS}"'
+    - apt-get -y install gcovr git build-essential ${EXTRA_PKGS}
 
 .image: &image
   image:
@@ -33,7 +35,7 @@ workflow:
     - librem5:arm64
 
 # Regular, full build
-build:native-debian-trixie:full:
+build:gcc:native-debian-trixie:full:
   <<: *tags
   <<: *image
   <<: *before_script
@@ -42,24 +44,43 @@ build:native-debian-trixie:full:
     paths:
       - _build
   script:
-    - meson -Db_coverage=true --werror . _build
-    - ninja -C _build
+    - meson setup -Db_coverage=true --werror _build
+    - meson compile -C _build
   except:
     variables:
       - $PKG_ONLY == "1"
 
 # Minimal build for e.g. submodule usage
-build:native-debian-trixie:lib:
+build:gcc:native-debian-trixie:lib:
   <<: *tags
   <<: *image
   <<: *before_script
   stage: build
   script:
-    - meson --werror -Ddaemon=false -Dgtk_doc=false . _build
-    - ninja -C _build
+    - meson setup --werror -Ddaemon=false -Dgtk_doc=false _build
+    - meson compile -C _build
   except:
     variables:
       - $PKG_ONLY == "1"
+
+# Build using clang
+build:clang:native-debian-trixie:full:
+  variables:
+    EXTRA_PKGS: clang
+  <<: *tags
+  <<: *image
+  <<: *before_script
+  stage: build
+  artifacts:
+    paths:
+      - _build
+  script:
+    - CC=clang meson setup --werror _build
+    - meson compile -C _build
+  except:
+    variables:
+      - $PKG_ONLY == "1"
+  allow_failure: true
 
 test:native-debian-trixie:
   <<: *tags
@@ -67,7 +88,7 @@ test:native-debian-trixie:
   <<: *before_script
   stage: test
   needs:
-    - build:native-debian-trixie:full
+    - build:gcc:native-debian-trixie:full
   coverage: '/^\s+lines\.+:\s+([\d.]+\%)\s+/'
   script:
     - dbus-run-session ninja -C _build test coverage
@@ -105,9 +126,16 @@ format-check:
   rules:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME'
 
+format-check:
+  <<: *tags
+  stage: style-checks
+  extends: .phosh-format-check
+  allow_failure: true
+
 package:deb-debian-trixie:arm64:
-  variables:
-    L5_DOCKER_IMAGE: debian:trixie
-  extends: .l5-build-debian-package
   tags:
     - librem5:arm64
+  stage: package
+  variables:
+    PHOSH_DOCKER_IMAGE: debian:trixie
+  extends: .phosh-build-debian-package
