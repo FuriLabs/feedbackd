@@ -18,6 +18,8 @@ Build-Depends:
  libgudev-1.0-dev,
  libgsound-dev,
  libjson-glib-dev,
+ libumockdev-dev,
+ umockdev,
  meson,
  pkgconf,
  python3-docutils <!nodoc>,
