@@ -2,6 +2,8 @@
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
+CONFIGURE_OPTS=-Dudev=true
+
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
   CONFIGURE_OPTS += -Dtests=false
 endif
@@ -27,10 +29,6 @@ endif
 
 override_dh_auto_configure:
 	dh_auto_configure -- $(CONFIGURE_OPTS)
-
-override_dh_installudev:
-	# Make sure all the symlink rules in 60 ran:
-	dh_installudev --priority=90
 
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
