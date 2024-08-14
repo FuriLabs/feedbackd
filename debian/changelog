@@ -1,8 +1,10 @@
-feedbackd (0.4.1-1) UNRELEASED; urgency=medium
+feedbackd (0.4.1-1) unstable; urgency=medium
 
   * New upstream release
+  * Use upstream udev rule. No need to ship a copy that
+    just gets out of sync.
 
- -- Guido Günther <agx@sigxcpu.org>  Wed, 14 Aug 2024 16:31:52 +0200
+ -- Guido Günther <agx@sigxcpu.org>  Wed, 14 Aug 2024 16:44:40 +0200
 
 feedbackd (0.4.0-1) unstable; urgency=medium
 
