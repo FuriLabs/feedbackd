@@ -12,17 +12,22 @@ Build-Depends:
  json-glib-tools,
  libgirepository1.0-dev <!nogir>,
  libglib2.0-dev,
+ libgmobile-dev,
  libgudev-1.0-dev,
  libgsound-dev,
  libjson-glib-dev,
+ libumockdev-dev,
  meson,
  pkg-config,
  python3-docutils <!nodoc>,
+ systemd-dev,
+ umockdev,
  valac,
  libgbinder-dev,
  libglibutil-dev,
 Standards-Version: 4.6.2
 Homepage: https://source.puri.sm/Librem5/feedbackd
+Rules-Requires-Root: no
 
 Package: feedbackd
 Architecture: any
