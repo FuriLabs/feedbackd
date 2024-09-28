@@ -1,8 +1,10 @@
-feedbackd (0.5.0-1) UNRELEASED; urgency=medium
+feedbackd (0.5.0-1) unstable; urgency=medium
 
   * New upstream release
+    - Detect haptic on Google Sargo and Oneplus Enchilada/Fachita
+    - Handle "alert slider" on Oneplus Enchilada/Fachita
 
- -- Guido Günther <agx@sigxcpu.org>  Sat, 28 Sep 2024 08:48:52 +0200
+ -- Guido Günther <agx@sigxcpu.org>  Sat, 28 Sep 2024 09:29:49 +0200
 
 feedbackd (0.4.1-1) unstable; urgency=medium
 
