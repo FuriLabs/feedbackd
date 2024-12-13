@@ -19,6 +19,7 @@
 
 #define LED_PATH "/sys/class/leds/"
 #define BRIGHTNESS_FILE "brightness"
+#define MAX_BRIGHTNESS_FILE "max_brightness"
 #define BLINK_FILE "blink"
 
 struct _FbdDroidLedsBackendSysfs
@@ -36,9 +37,10 @@ G_DEFINE_TYPE_WITH_CODE (FbdDroidLedsBackendSysfs, fbd_droid_leds_backend_sysfs,
                                                 fbd_droid_leds_backend_interface_init))
 
 static gboolean
-set_led_brightness (const gchar *led_path, guint brightness) {
-  int fd, fd_blink;
-  ssize_t ret, ret_blink;
+set_led_brightness (const gchar *led_path,
+                    guint brightness)
+{
+  GError *error = NULL;
   gboolean result = FALSE;
   gchar *brightness_str, *blink_str;
   gchar *brightness_path, *blink_path;
@@ -50,35 +52,65 @@ set_led_brightness (const gchar *led_path, guint brightness) {
   blink_str = g_strdup_printf ("%d", brightness > 0 ? 1 : 0);
 
   if (g_file_test (brightness_path, G_FILE_TEST_EXISTS)) {
-    fd = open (brightness_path, O_WRONLY);
-    if (fd == -1) {
-      g_warning ("Failed to open %s: %s", brightness_path, strerror (errno));
+    GFile *brightness_file = g_file_new_for_path (brightness_path);
+    GFileOutputStream *brightness_stream = g_file_replace (brightness_file,
+                                                           NULL,
+                                                           FALSE,
+                                                           G_FILE_CREATE_NONE,
+                                                           NULL,
+                                                           &error);
+
+    if (error) {
+      g_warning ("Failed to open %s: %s", brightness_path, error->message);
+      g_error_free (error);
+      error = NULL;
     } else {
-      ret = write (fd, brightness_str, strlen (brightness_str));
-      if (ret == -1) {
-        g_warning ("Failed to write to %s: %s", brightness_path, strerror (errno));
+      if (!g_output_stream_write_all (G_OUTPUT_STREAM (brightness_stream),
+                                      brightness_str,
+                                      strlen (brightness_str),
+                                      NULL,
+                                      NULL,
+                                      &error)) {
+        g_warning ("Failed to write to %s: %s", brightness_path, error->message);
+        g_error_free (error);
+        error = NULL;
       } else {
         result = TRUE;
       }
-
-      close (fd);
+      g_object_unref (brightness_stream);
     }
+    g_object_unref (brightness_file);
   }
 
   if (g_file_test (blink_path, G_FILE_TEST_EXISTS)) {
-    fd_blink = open (blink_path, O_WRONLY);
-    if (fd_blink == -1) {
-      g_warning ("Failed to open %s: %s", blink_path, strerror (errno));
+    GFile *blink_file = g_file_new_for_path (blink_path);
+    GFileOutputStream *blink_stream = g_file_replace (blink_file,
+                                                      NULL,
+                                                      FALSE,
+                                                      G_FILE_CREATE_NONE,
+                                                      NULL,
+                                                      &error);
+
+    if (error) {
+      g_warning ("Failed to open %s: %s", blink_path, error->message);
+      g_error_free (error);
+      error = NULL;
     } else {
-      ret_blink = write (fd_blink, blink_str, strlen (blink_str));
-      if (ret_blink == -1) {
-        g_warning ("Failed to write to %s: %s", blink_path, strerror (errno));
+      if (!g_output_stream_write_all (G_OUTPUT_STREAM (blink_stream),
+                                      blink_str,
+                                      strlen (blink_str),
+                                      NULL,
+                                      NULL,
+                                      &error)) {
+        g_warning ("Failed to write to %s: %s", blink_path, error->message);
+        g_error_free (error);
+        error = NULL;
       } else {
         result = TRUE;
       }
-
-      close (fd_blink);
+      g_object_unref (blink_stream);
     }
+    g_object_unref (blink_file);
   }
 
   g_free (brightness_path);
@@ -89,6 +121,29 @@ set_led_brightness (const gchar *led_path, guint brightness) {
   return result;
 }
 
+static guint
+get_max_brightness (const gchar *led_path)
+{
+  gchar *max_brightness_path;
+  gchar *contents = NULL;
+  gsize length;
+  guint max_brightness = 1;
+
+  max_brightness_path = g_build_filename (led_path, MAX_BRIGHTNESS_FILE, NULL);
+
+  if (g_file_test (max_brightness_path, G_FILE_TEST_EXISTS)) {
+    if (g_file_get_contents (max_brightness_path, &contents, &length, NULL)) {
+      max_brightness = (guint) g_ascii_strtoull (contents, NULL, 10);
+      if (max_brightness == 0)
+        max_brightness = 1;
+      g_free (contents);
+    }
+  }
+
+  g_free (max_brightness_path);
+  return max_brightness;
+}
+
 static gboolean
 fbd_droid_leds_backend_sysfs_is_supported (FbdDroidLedsBackend *backend)
 {
@@ -97,9 +152,9 @@ fbd_droid_leds_backend_sysfs_is_supported (FbdDroidLedsBackend *backend)
 
 static gboolean
 fbd_droid_leds_backend_sysfs_start_periodic (FbdDroidLedsBackend *backend,
-                                            FbdFeedbackLedColor color,
-                                            guint               max_brightness,
-                                            guint               freq)
+                                             FbdFeedbackLedColor color,
+                                             guint               max_brightness,
+                                             guint               freq)
 {
   FbdDroidLedsBackendSysfs *self = FBD_DROID_LEDS_BACKEND_SYSFS (backend);
   g_return_val_if_fail (FBD_IS_DROID_LEDS_BACKEND_SYSFS (self), FALSE);
@@ -107,9 +162,9 @@ fbd_droid_leds_backend_sysfs_start_periodic (FbdDroidLedsBackend *backend,
   gboolean success = TRUE;
 
   for (int i = 0; i < 3; ++i) {
-    if (!set_led_brightness (self->led_paths[i], 1)) {
-        success = FALSE;
-    }
+    guint brightness_value = get_max_brightness (self->led_paths[i]);
+    if (!set_led_brightness (self->led_paths[i], brightness_value))
+      success = FALSE;
   }
 
   return success;
@@ -117,7 +172,7 @@ fbd_droid_leds_backend_sysfs_start_periodic (FbdDroidLedsBackend *backend,
 
 static gboolean
 fbd_droid_leds_backend_sysfs_stop (FbdDroidLedsBackend *backend,
-                                  FbdFeedbackLedColor  color)
+                                   FbdFeedbackLedColor  color)
 {
   FbdDroidLedsBackendSysfs *self = FBD_DROID_LEDS_BACKEND_SYSFS (backend);
   g_return_val_if_fail (FBD_IS_DROID_LEDS_BACKEND_SYSFS (self), FALSE);
@@ -125,9 +180,8 @@ fbd_droid_leds_backend_sysfs_stop (FbdDroidLedsBackend *backend,
   gboolean success = TRUE;
 
   for (int i = 0; i < 3; ++i) {
-    if (!set_led_brightness (self->led_paths[i], 0)) {
-        success = FALSE;
-    }
+    if (!set_led_brightness (self->led_paths[i], 0))
+      success = FALSE;
   }
 
   return success;
@@ -146,9 +200,8 @@ fbd_droid_leds_backend_sysfs_finalize (GObject *object)
 {
   FbdDroidLedsBackendSysfs *self = FBD_DROID_LEDS_BACKEND_SYSFS (object);
 
-  for (int i = 0; i < 3; ++i) {
+  for (int i = 0; i < 3; ++i)
     g_free (self->led_paths[i]);
-  }
 
   G_OBJECT_CLASS (fbd_droid_leds_backend_sysfs_parent_class)->finalize (object);
 }
