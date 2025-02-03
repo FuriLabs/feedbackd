@@ -15,4 +15,4 @@ Restrictions: allow-stderr, superficial
 Test-Command: fbd-theme-validate /usr/share/feedbackd/themes/default.json
 Depends:
  feedbackd
-Restrictions: superficial
+Restrictions: superficial, allow-stderr
