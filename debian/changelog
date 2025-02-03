@@ -1,8 +1,10 @@
-feedbackd (0.7.0-1) UNRELEASED; urgency=medium
+feedbackd (0.7.0-1) unstable; urgency=medium
 
   * New upstream release
+  * Update symbols
+  * tests: Allow stderr output. The dconf warning doesn't matter
 
- -- Guido Günther <agx@sigxcpu.org>  Mon, 03 Feb 2025 15:53:33 +0100
+ -- Guido Günther <agx@sigxcpu.org>  Mon, 03 Feb 2025 16:04:59 +0100
 
 feedbackd (0.6.0-1) unstable; urgency=medium
 
