@@ -2,7 +2,7 @@
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
-CONFIGURE_OPTS=--wrap-mode=default -Dudev=true
+CONFIGURE_OPTS=-Dudev=true
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
   CONFIGURE_OPTS += -Dtests=false

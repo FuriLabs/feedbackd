@@ -1,5 +1,7 @@
 /*
  * Copyright (C) 2020 Purism SPC
+ *               2024-2025 The Phosh Developers
+ *
  * SPDX-License-Identifier: GPL-3.0+
  * Author: Guido Günther <agx@sigxcpu.org>
  */
@@ -18,8 +20,10 @@
 #endif
 #include "fbd-event.h"
 #include "fbd-feedback-vibra.h"
+#include "fbd-feedback-vibra-pattern.h"
 #include "fbd-feedback-manager.h"
 #include "fbd-feedback-theme.h"
+#include "fbd-haptic-manager.h"
 #include "fbd-theme-expander.h"
 
 #include <gmobile.h>
@@ -46,6 +50,9 @@
  * based on the incoming events.
  */
 
+FbdDebugFlags fbd_debug_flags;
+
+
 typedef struct _FbdFeedbackManager {
   LfbGdbusFeedbackSkeleton parent;
 
@@ -59,6 +66,9 @@ typedef struct _FbdFeedbackManager {
   GHashTable              *events;
   /* Key: DBus name, value: watch_id */
   GHashTable              *clients;
+
+  /* org.sigxcpu.Feedbackd.Haptic */
+  FbdHapticManager        *haptic_manager;
 
   /* Hardware interaction */
   GUdevClient             *client;
@@ -349,9 +359,12 @@ get_max_level (FbdFeedbackProfileLevel global_level,
 }
 
 static gboolean
-parse_hints (GVariant *hints, FbdFeedbackProfileLevel *level, gboolean *hint_important)
+parse_hints (GVariant                *hints,
+             FbdFeedbackProfileLevel *level,
+             gboolean                *hint_important,
+             char                   **hint_sound_file)
 {
-  const gchar *profile;
+  const gchar *profile, *sound_file;
   gboolean found, important;
   g_auto (GVariantDict) dict = G_VARIANT_DICT_INIT (NULL);
 
@@ -365,8 +378,68 @@ parse_hints (GVariant *hints, FbdFeedbackProfileLevel *level, gboolean *hint_imp
   if (hint_important && found)
     *hint_important = important;
 
+  found = g_variant_dict_lookup (&dict, "sound-file", "&s", &sound_file);
+  if (hint_sound_file && found)
+    *hint_sound_file = g_strdup (sound_file);
+
   return TRUE;
 }
+
+/**
+ * add_event_feedbacks:
+ *
+ * Add the suitable feedacks to the event.
+ *
+ * Returns: `TRUE` if at least on feedback was added.
+ */
+static gboolean
+add_event_feedbacks (FbdFeedbackManager      *self,
+                     FbdEvent                *event,
+                     GSList                  *feedbacks,
+                     FbdFeedbackProfileLevel  level,
+                     const char              *sound_file)
+{
+  gboolean has_vibra = FALSE, has_sound = FALSE;
+
+  /* Synthesize sound event for custom sound */
+  if (sound_file && level >= FBD_FEEDBACK_PROFILE_LEVEL_FULL) {
+    g_autoptr (FbdFeedbackSound) sound = NULL;
+
+    g_debug ("Using custom sound event '%s'", sound_file);
+    sound = fbd_feedback_sound_new_from_file_name (sound_file);
+
+    fbd_event_add_feedback (event, FBD_FEEDBACK_BASE (sound));
+    has_sound = TRUE;
+  }
+
+  for (GSList *l = feedbacks; l; l = l->next) {
+    FbdFeedbackBase *fb = FBD_FEEDBACK_BASE (l->data);
+
+    if (!fbd_feedback_is_available (FBD_FEEDBACK_BASE (fb)))
+      continue;
+
+    if (FBD_IS_FEEDBACK_SOUND (fb) && has_sound)
+      continue;
+
+    /* Handle one haptic feedback at a time. In practice haptics can handle multiple
+     * patterns but none of the devices supports this atm */
+    /* TODO: should respect priorities */
+    if (FBD_IS_FEEDBACK_VIBRA (fb)) {
+      if (fbd_dev_vibra_is_busy (self->vibra))
+        continue;
+      has_vibra = TRUE;
+    }
+
+    /* Events take priority over the haptic interface */
+    if (has_vibra)
+      fbd_haptic_manager_end_feedback (self->haptic_manager);
+
+    fbd_event_add_feedback (event, fb);
+  }
+
+  return (fbd_event_get_feedbacks (event) != NULL);
+}
+
 
 static gboolean
 fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback      *object,
@@ -378,12 +451,13 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback      *object,
 {
   FbdFeedbackManager *self;
   FbdEvent *event;
-  GSList *feedbacks, *l;
+  GSList *feedbacks;
   guint event_id;
   const gchar *sender;
-  FbdFeedbackProfileLevel app_level, level, hint_level = FBD_FEEDBACK_PROFILE_LEVEL_FULL;
+  FbdFeedbackProfileLevel level, hint_level = FBD_FEEDBACK_PROFILE_LEVEL_FULL;
   gboolean found_fb = FALSE;
-  gboolean hint_important = FALSE, can_important;
+  gboolean hint_important = FALSE;
+  g_autofree char *sound_file = NULL;
 
   sender = g_dbus_method_invocation_get_sender (invocation);
   g_debug ("Event '%s' for '%s' from %s", arg_event, arg_app_id, sender);
@@ -407,7 +481,7 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback      *object,
     return TRUE;
   }
 
-  if (!parse_hints (arg_hints, &hint_level, &hint_important)) {
+  if (!parse_hints (arg_hints, &hint_level, &hint_important, &sound_file)) {
     g_dbus_method_invocation_return_error (invocation, G_DBUS_ERROR,
                                            G_DBUS_ERROR_INVALID_ARGS,
                                            "Invalid hints");
@@ -422,29 +496,12 @@ fbd_feedback_manager_handle_trigger_feedback (LfbGdbusFeedback      *object,
   event = fbd_event_new (event_id, arg_app_id, arg_event, arg_timeout, sender);
   g_hash_table_insert (self->events, GUINT_TO_POINTER (event_id), event);
 
-  app_level = app_get_feedback_level (arg_app_id);
-  can_important = app_is_important (self, arg_app_id);
-
-  if (hint_important && can_important)
-    level = hint_level;
-  else
-    level = get_max_level (self->level, app_level, hint_level);
+  level = fbd_feedback_manager_get_effective_level (self, arg_app_id, hint_level, hint_important);
 
   feedbacks = fbd_feedback_theme_lookup_feedback (self->theme, level, event);
-  if (feedbacks) {
-    for (l = feedbacks; l; l = l->next) {
-      FbdFeedbackBase *fb = FBD_FEEDBACK_BASE (l->data);
-
-      if (fbd_feedback_is_available (FBD_FEEDBACK_BASE (fb))) {
-        fbd_event_add_feedback (event, fb);
-        found_fb = TRUE;
-      }
-    }
+  found_fb = add_event_feedbacks (self, event, feedbacks, level, sound_file);
+  if (feedbacks)
     g_slist_free_full (feedbacks, g_object_unref);
-  } else {
-    /* No feedbacks found at all */
-    found_fb = FALSE;
-  }
 
   lfb_gdbus_feedback_complete_trigger_feedback (object, invocation, event_id);
 
@@ -512,6 +569,9 @@ fbd_feedback_manager_constructed (GObject *object)
   g_signal_connect_swapped (self->settings, "changed::" FEEDBACKD_KEY_ALLOW_IMPORTANT,
                             G_CALLBACK (on_feedbackd_allow_important_changed), self);
   on_feedbackd_allow_important_changed (self, FEEDBACKD_KEY_ALLOW_IMPORTANT, self->settings);
+
+  if (self->vibra || fbd_debug_flags & FBD_DEBUG_FLAG_FORCE_HAPTIC)
+    self->haptic_manager = fbd_haptic_manager_new ();
 }
 
 
@@ -519,6 +579,8 @@ static void
 fbd_feedback_manager_dispose (GObject *object)
 {
   FbdFeedbackManager *self = FBD_FEEDBACK_MANAGER (object);
+
+  g_clear_object (&self->haptic_manager);
 
   g_clear_object (&self->settings);
   g_clear_object (&self->theme);
@@ -678,4 +740,45 @@ fbd_feedback_manager_set_profile (FbdFeedbackManager *self, const gchar *profile
   cancel_running (self);
 
   return TRUE;
+}
+
+
+FbdHapticManager *
+fbd_feedback_manager_get_haptic_manager (FbdFeedbackManager *self)
+{
+  g_assert (FBD_IS_FEEDBACK_MANAGER (self));
+
+  return self->haptic_manager;
+}
+
+/**
+ * fbd_feedback_manager_get_effective_level:
+ * @self: The feedback manager
+ * @app_id: The app-id of the app that triggered the feedback
+ * @want_level: The wanted level
+ * @important: Whether the important hint is set
+ *
+ * Calculates the effective feedback level taking the hints sent for the event
+ * and the system configuration into account
+ *
+ * Returns: The effective feedback level
+ */
+FbdFeedbackProfileLevel
+fbd_feedback_manager_get_effective_level (FbdFeedbackManager      *self,
+                                          const char              *app_id,
+                                          FbdFeedbackProfileLevel  want_level,
+                                          gboolean                 important)
+{
+  gboolean can_important;
+  FbdFeedbackProfileLevel app_level, level;
+
+  app_level = app_get_feedback_level (app_id);
+  can_important = app_is_important (self, app_id);
+
+  if (important && can_important)
+    level = want_level;
+  else
+    level = get_max_level (self->level, app_level, want_level);
+
+  return level;
 }

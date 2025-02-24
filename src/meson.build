@@ -41,8 +41,10 @@ sources = [
   'fbd-feedback-sound.c',
   'fbd-feedback-theme.c',
   'fbd-feedback-vibra.c',
+  'fbd-feedback-vibra-pattern.c',
   'fbd-feedback-vibra-periodic.c',
   'fbd-feedback-vibra-rumble.c',
+  'fbd-haptic-manager.c',
   'fbd-theme-expander.c',
   'fbd-udev.c',
 ]
@@ -95,6 +97,15 @@ executable(
   sources : ['fbd-ledctrl.c'],
   include_directories : fbd_inc,
   dependencies : [glib],
+  install : true,
+  install_dir: libexecdir,
+)
+
+executable(
+  'fbd-alert-slider',
+  sources : ['fbd-alert-slider.c'],
+  include_directories : fbd_inc,
+  dependencies : [glib, gio, gio_unix, gudev, libfeedback_dep],
   install : true,
   install_dir: libexecdir,
 )

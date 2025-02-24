@@ -4,7 +4,10 @@ namespace = 'LfbGdbus'
 
 generated_dbus_sources = []
 
-dbus_interfaces = [ 'org.sigxcpu.Feedback.xml' ]
+dbus_interfaces = [
+  'org.sigxcpu.Feedback.xml',
+  'org.sigxcpu.Feedback.Haptic.xml',
+]
 
 generated_dbus_sources += gnome.gdbus_codegen('lfb-gdbus',
       sources          : dbus_interfaces,
@@ -71,5 +74,25 @@ endif
 if get_option('udev')
   install_data('90-feedbackd.rules', install_dir: udevdir)
 endif
+
+systemd_user_unit_dir = get_option('systemd_user_unit_dir')
+systemd_dep = dependency('systemd', required: false)
+if systemd_user_unit_dir == ''
+  if systemd_dep.found()
+    systemd_user_unit_dir = systemd_dep.get_variable('systemd_user_unit_dir')
+  else
+    systemd_user_unit_dir = prefix / libdir / 'systemd' / 'user'
+  endif
+endif
+
+# Alert slider Systemd user service
+alert_slider_unit = 'fbd-alert-slider.service'
+configure_file(
+  input : alert_slider_unit + '.in',
+  output : alert_slider_unit,
+  configuration : service_data,
+  install : true,
+  install_dir : systemd_user_unit_dir,
+)
 
 endif # daemon
