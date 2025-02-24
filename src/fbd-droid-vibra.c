@@ -100,8 +100,6 @@ initable_init (GInitable     *initable,
                GError       **error)
 {
     FbdDevVibra *self = FBD_DEV_VIBRA (initable);
-    char *device, *iface, *fqname;
-    int i;
 
     g_debug ("initializing droid vibra");
 
@@ -163,8 +161,6 @@ fbd_dev_vibra_dispose (GObject *object)
 static void
 fbd_dev_vibra_finalize (GObject *object)
 {
-    FbdDevVibra *self = FBD_DEV_VIBRA (object);
-
     G_OBJECT_CLASS (fbd_dev_vibra_parent_class)->finalize (object);
 }
 
