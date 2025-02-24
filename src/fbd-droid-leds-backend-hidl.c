@@ -117,7 +117,7 @@ fbd_droid_leds_backend_hidl_start_periodic (FbdDroidLedsBackend *backend,
                                               BINDER_LIGHT_HIDL_2_0_SET_LIGHT,
                                               req, &status);
   gbinder_local_request_unref (req);
-  
+
   if (status == GBINDER_STATUS_OK && fbd_binder_reply_status_is_ok (reply)) {
     return TRUE;
   } else {
@@ -153,7 +153,7 @@ fbd_droid_leds_backend_hidl_stop (FbdDroidLedsBackend *backend,
                                               BINDER_LIGHT_HIDL_2_0_SET_LIGHT,
                                               req, &status);
   gbinder_local_request_unref (req);
-  
+
   if (status == GBINDER_STATUS_OK && fbd_binder_reply_status_is_ok (reply)) {
     return TRUE;
   } else {
@@ -208,17 +208,12 @@ fbd_droid_leds_backend_hidl_dispose (GObject *obj)
 
   g_debug ("Disposing droid leds hidl");
 
-  if (self->client) {
+  if (self->client)
     gbinder_client_unref (self->client);
-  }
-  
-  if (self->remote) {
+  if (self->remote)
     gbinder_remote_object_unref (self->remote);
-  }
-  
-  if (self->service_manager) {
+  if (self->service_manager)
     gbinder_servicemanager_unref (self->service_manager);
-  }
 
   G_OBJECT_CLASS (fbd_droid_leds_backend_hidl_parent_class)->dispose (obj);
 }

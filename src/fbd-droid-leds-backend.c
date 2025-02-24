@@ -29,18 +29,18 @@ fbd_droid_leds_backend_get_argb_color (FbdFeedbackLedColor color,
 
   argb_color = (alpha & 0xff) << 24;
   switch (color) {
-      case FBD_FEEDBACK_LED_COLOR_WHITE:
-          argb_color += ((max & 0xff) << 16) + ((max & 0xff) << 8) + (max & 0xff);
-          break;
-      case FBD_FEEDBACK_LED_COLOR_RED:
-          argb_color += (max & 0xff) << 16;
-          break;
-      case FBD_FEEDBACK_LED_COLOR_GREEN:
-          argb_color += (max & 0xff) << 8;
-          break;
-      case FBD_FEEDBACK_LED_COLOR_BLUE:
-          argb_color += max & 0xff;
-          break;
+  case FBD_FEEDBACK_LED_COLOR_WHITE:
+    argb_color += ((max & 0xff) << 16) + ((max & 0xff) << 8) + (max & 0xff);
+    break;
+  case FBD_FEEDBACK_LED_COLOR_RED:
+    argb_color += (max & 0xff) << 16;
+    break;
+  case FBD_FEEDBACK_LED_COLOR_GREEN:
+     argb_color += (max & 0xff) << 8;
+     break;
+  case FBD_FEEDBACK_LED_COLOR_BLUE:
+     argb_color += max & 0xff;
+     break;
   }
 
   return argb_color;
@@ -50,9 +50,9 @@ gboolean
 fbd_droid_leds_backend_is_supported (FbdDroidLedsBackend *self)
 {
   FbdDroidLedsBackendInterface *iface;
-  
+
   g_return_val_if_fail (FBD_IS_DROID_LEDS_BACKEND (self), FALSE);
-  
+
   iface = FBD_DROID_LEDS_BACKEND_GET_IFACE (self);
   g_return_val_if_fail (iface->is_supported != NULL, FALSE);
   return iface->is_supported (self);
@@ -65,9 +65,9 @@ fbd_droid_leds_backend_start_periodic (FbdDroidLedsBackend *self,
                                        guint               freq)
 {
   FbdDroidLedsBackendInterface *iface;
-  
+
   g_return_val_if_fail (FBD_IS_DROID_LEDS_BACKEND (self), FALSE);
-  
+
   iface = FBD_DROID_LEDS_BACKEND_GET_IFACE (self);
   g_return_val_if_fail (iface->start_periodic != NULL, FALSE);
   return iface->start_periodic (self, color, max_brightness, freq);
@@ -78,9 +78,9 @@ fbd_droid_leds_backend_stop (FbdDroidLedsBackend *self,
                             FbdFeedbackLedColor color)
 {
   FbdDroidLedsBackendInterface *iface;
-  
+
   g_return_val_if_fail (FBD_IS_DROID_LEDS_BACKEND (self), FALSE);
-  
+
   iface = FBD_DROID_LEDS_BACKEND_GET_IFACE (self);
   g_return_val_if_fail (iface->stop != NULL, FALSE);
   return iface->stop (self, color);
