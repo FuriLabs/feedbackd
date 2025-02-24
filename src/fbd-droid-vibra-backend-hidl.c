@@ -66,7 +66,7 @@ fbd_droid_vibra_backend_hidl_on (FbdDroidVibraBackend *backend,
                                               BINDER_VIBRATOR_HIDL_1_0_ON,
                                               req, &status);
   gbinder_local_request_unref (req);
-  
+
   if (status == GBINDER_STATUS_OK && fbd_binder_reply_status_is_ok (reply)) {
     return TRUE;
   } else {
@@ -87,7 +87,7 @@ fbd_droid_vibra_backend_hidl_off (FbdDroidVibraBackend *backend)
                                               BINDER_VIBRATOR_HIDL_1_0_OFF,
                                               req, &status);
   gbinder_local_request_unref(req);
-  
+
   if (status == GBINDER_STATUS_OK && fbd_binder_reply_status_is_ok (reply)) {
     return TRUE;
   } else {
@@ -143,17 +143,12 @@ fbd_droid_vibra_backend_hidl_dispose (GObject *obj)
 
   g_debug ("Disposing droid vibra hidl");
 
-  if (self->client) {
+  if (self->client)
     gbinder_client_unref (self->client);
-  }
-  
-  if (self->remote) {
+  if (self->remote)
     gbinder_remote_object_unref (self->remote);
-  }
-  
-  if (self->service_manager) {
+  if (self->service_manager)
     gbinder_servicemanager_unref (self->service_manager);
-  }
 
   G_OBJECT_CLASS (fbd_droid_vibra_backend_hidl_parent_class)->dispose (obj);
 }

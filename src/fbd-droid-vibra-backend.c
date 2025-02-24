@@ -21,9 +21,9 @@ fbd_droid_vibra_backend_on (FbdDroidVibraBackend *self,
                             int                   duration)
 {
   FbdDroidVibraBackendInterface *iface;
-  
+
   g_return_val_if_fail (FBD_IS_DROID_VIBRA_BACKEND (self), FALSE);
-  
+
   iface = FBD_DROID_VIBRA_BACKEND_GET_IFACE (self);
   g_return_val_if_fail (iface->on != NULL, FALSE);
   return iface->on (self, duration);
@@ -33,9 +33,9 @@ gboolean
 fbd_droid_vibra_backend_off (FbdDroidVibraBackend *self)
 {
   FbdDroidVibraBackendInterface *iface;
-  
+
   g_return_val_if_fail (FBD_IS_DROID_VIBRA_BACKEND (self), FALSE);
-  
+
   iface = FBD_DROID_VIBRA_BACKEND_GET_IFACE (self);
   g_return_val_if_fail (iface->off != NULL, FALSE);
   return iface->off (self);

@@ -54,7 +54,7 @@ struct _FbdDroidVibraBackendAidl
   GBinderServiceManager *service_manager;
   GBinderRemoteObject   *remote;
   GBinderClient         *client;
-  
+
   GBinderLocalObject    *callback_object;
 };
 
@@ -99,9 +99,9 @@ fbd_droid_vibra_backend_get_capabilities (FbdDroidVibraBackend *backend)
                                               BINDER_VIBRATOR_AIDL_GET_CAPABILITIES,
                                               req, &status);
   gbinder_local_request_unref (req);
-  
+
   gbinder_remote_reply_init_reader (reply, &reader);
-  
+
   if (status == GBINDER_STATUS_OK && fbd_binder_status_is_ok (&reader) &&
       gbinder_reader_read_int32 (&reader, &capabilities)) {
     return (FbdDroidVibraBackendAidlCapabilities) capabilities;
@@ -129,7 +129,7 @@ fbd_droid_vibra_backend_aidl_on (FbdDroidVibraBackend *backend,
                                               BINDER_VIBRATOR_AIDL_ON,
                                               req, &status);
   gbinder_local_request_unref (req);
-  
+
   if (status == GBINDER_STATUS_OK && fbd_binder_reply_status_is_ok (reply)) {
     return TRUE;
   } else {
@@ -152,7 +152,7 @@ fbd_droid_vibra_backend_aidl_off (FbdDroidVibraBackend *backend)
                                               BINDER_VIBRATOR_AIDL_OFF,
                                               req, &status);
   gbinder_local_request_unref(req);
-  
+
   if (status == GBINDER_STATUS_OK && fbd_binder_reply_status_is_ok (reply)) {
     return TRUE;
   } else {
@@ -215,21 +215,14 @@ fbd_droid_vibra_backend_aidl_dispose (GObject *obj)
 
   g_debug ("Disposing droid vibra aidl");
 
-  if (self->callback_object) {
+  if (self->callback_object)
     gbinder_local_object_unref (self->callback_object);
-  }
-
-  if (self->client) {
+  if (self->client)
     gbinder_client_unref (self->client);
-  }
-
-  if (self->remote) {
+  if (self->remote)
     gbinder_remote_object_unref (self->remote);
-  }
-
-  if (self->service_manager) {
+  if (self->service_manager)
     gbinder_servicemanager_unref (self->service_manager);
-  }
 
   G_OBJECT_CLASS (fbd_droid_vibra_backend_aidl_parent_class)->dispose (obj);
 }

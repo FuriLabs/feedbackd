@@ -68,8 +68,6 @@ fbd_droid_vibra_backend_sysfs_on (FbdDroidVibraBackend *backend, int duration)
   char duration_str[16];
   g_snprintf (duration_str, sizeof (duration_str), "%d", duration);
 
-  //g_print("Vibration duration: %s\n", duration_str);
-
   if (!write_to_sysfs (SYSFS_DURATION_NODE, duration_str))
     return FALSE;
 
@@ -80,7 +78,7 @@ static gboolean
 fbd_droid_vibra_backend_sysfs_off (FbdDroidVibraBackend *backend)
 {
   if (g_file_test ("/usr/lib/droidian/device/vibrator-sysfs-multiplier", G_FILE_TEST_EXISTS))
-    g_usleep(50000);
+    g_usleep (50000);
 
   return write_to_sysfs (SYSFS_ACTIVATE_NODE, "0");
 }
