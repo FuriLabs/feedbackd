@@ -1,3 +1,9 @@
+feedbackd (0.8.0-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Guido Günther <agx@sigxcpu.org>  Fri, 21 Mar 2025 20:09:07 +0100
+
 feedbackd (0.7.0-2) unstable; urgency=medium
 
   * wrap-and-sort and check that in CI
