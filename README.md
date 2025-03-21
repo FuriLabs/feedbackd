@@ -177,7 +177,7 @@ modified theme file in
 If multiple theme files exist, the selection logic follows these steps:
 
 1. It picks an identifier from the devicetree, until none are left
-1. It searches through the folders in `XDG_DATA_DIRS` in order of appearence,
+1. It searches through the folders in `XDG_DATA_DIRS` in order of appearance,
    until none are left
 1. If a theme file is found in the current location with the current name,
    **it will be chosen** and other themes are ignored.
@@ -296,6 +296,11 @@ busctl call --user org.sigxcpu.Feedback /org/sigxcpu/Feedback org.sigxcpu.Feedba
 
 The API is exported as a separate interface `org.sigxcpu.Feedback.Haptic` which is only available when
 a haptic device is found.
+
+## Getting in Touch
+
+- Issue tracker: <https://source.puri.sm/agx/feedbackd/-/issues>
+- Matrix: <https://matrix.to/#/#phosh:sigxcpu.org>
 
 ## Documentation
 

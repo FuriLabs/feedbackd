@@ -97,10 +97,8 @@
         {
           "event-name"   : "alarm-clock-elapsed",
           "type"         : "VibraPeriodic",
-          "magnitude"    : 32767,
-          "duration"     : 10000,
-          "fade-in-time" : 10000,
-          "fade-in-level": 4096
+          "magnitude"    : 0.5,
+          "duration"     : 1000
         },
         {
           "event-name" : "bell-terminal",
@@ -109,8 +107,9 @@
         },
         {
           "event-name" : "button-pressed",
-          "type"       : "VibraRumble",
-          "duration"   : 15
+          "type"       : "VibraPattern",
+          "magnitudes" : [ 0.2 ],
+          "durations"  : [ 7 ]
         },
         {
           "event-name" : "button-released",
@@ -119,9 +118,9 @@
         },
         {
           "event-name" : "message-new-cellbroadcast",
-          "type"       : "VibraPeriodic",
-          "magnitude"  : 10000,
-          "duration"   : 3000
+          "type"       : "VibraPattern",
+          "magnitudes" : [1.0, 0.0],
+          "durations"  : [200, 200]
         },
         {
           "event-name" : "message-new-email",
@@ -148,9 +147,16 @@
           "duration"   : 150
         },
         {
+          "event-name" : "notification-new-generic",
+          "type"       : "VibraPattern",
+          "magnitudes" : [ 0.25, 0.0, 0.25 ],
+          "durations"  : [ 50, 250, 50 ]
+        },
+        {
           "event-name" : "phone-incoming-call",
           "type"       : "VibraPeriodic",
-          "duration"   : 10000
+          "magnitude"  : 0.5,
+          "duration"   : 1000
         },
         {
           "event-name" : "timeout-completed",
@@ -160,8 +166,8 @@
         {
           "event-name" : "theme-demo",
           "type"       : "VibraPeriodic",
-          "magnitude"  : 32767,
-          "duration"   : 5000
+          "magnitude"  : 0.5,
+          "duration"   : 1000
         },
         {
           "event-name" : "window-close",

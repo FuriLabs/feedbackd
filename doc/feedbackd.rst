@@ -30,6 +30,8 @@ app that triggered it crashes.
 For details refer to the event and feedback theme specs at
 `<https://source.puri.sm/Librem5/feedbackd/>`__
 
+Feedbackd reloads the feedback theme on `SIGHUP` (i.e. `pkill -HUP feedbackd`).
+
 Options
 =======
 
@@ -54,6 +56,8 @@ These gsettings are used by ``feedbackd``:
     - `prefer-flash`: Prefer camera flash over status LED
     - `theme`: The feedback theme to use. This can be used to override
       the feedback theme picked by feedbackd based on device information.
+    - `max-haptic-strength`: Limits th maximum strenght used for the
+      haptic motor `[0.0, 1.0]`.
 
 - `org.sigxcpu.feedbackd.application`
 
