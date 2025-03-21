@@ -2,28 +2,29 @@ Source: feedbackd
 Section: x11
 Priority: optional
 Maintainer: DebianOnMobile Maintainers <debian-on-mobile-maintainers@alioth-lists.debian.net>
-Uploaders: Arnaud Ferraris <arnaud.ferraris@gmail.com>,
+Uploaders:
+ Arnaud Ferraris <arnaud.ferraris@gmail.com>,
  Guido Günther <agx@sigxcpu.org>,
 Build-Depends:
- dbus,
  debhelper-compat (= 13),
  dh-sequence-gir,
- gsettings-desktop-schemas <!nocheck>,
+ dbus,
  gi-docgen <!nodoc>,
  gir1.2-gio-2.0-dev,
+ gsettings-desktop-schemas <!nocheck>,
  json-glib-tools,
  libgirepository1.0-dev,
  libglib2.0-dev,
  libgmobile-dev,
- libgudev-1.0-dev,
  libgsound-dev,
+ libgudev-1.0-dev,
  libjson-glib-dev,
  libumockdev-dev,
- systemd-dev,
- umockdev,
  meson,
  pkgconf,
  python3-docutils <!nodoc>,
+ systemd-dev,
+ umockdev,
  valac,
 Standards-Version: 4.6.2
 Homepage: https://source.puri.sm/Librem5/feedbackd
@@ -34,10 +35,10 @@ Rules-Requires-Root: no
 Package: feedbackd
 Architecture: any
 Depends:
- ${misc:Depends},
- ${shlibs:Depends},
  feedbackd-common (>= ${source:Version}),
  sound-theme-freedesktop,
+ ${misc:Depends},
+ ${shlibs:Depends},
 Recommends:
  gsettings-desktop-schemas,
 Description: DBus service for haptic/visual/audio feedback
@@ -70,7 +71,8 @@ Section: libs
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
-Recommends: feedbackd (>= ${binary:Version})
+Recommends:
+ feedbackd (>= ${binary:Version}),
 Description: Library for managing haptic/visual/audio feedback
  Feedbackd is a DBus activated daemon that provides haptic/
  visual/audio feedback based on events selected from configurable
