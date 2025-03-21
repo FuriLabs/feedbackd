@@ -35,6 +35,7 @@ Rules-Requires-Root: no
 Package: feedbackd
 Architecture: any
 Depends:
+ adduser,
  feedbackd-common (>= ${source:Version}),
  sound-theme-freedesktop,
  ${misc:Depends},
