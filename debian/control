@@ -42,6 +42,7 @@ Depends:
  ${shlibs:Depends},
 Recommends:
  gsettings-desktop-schemas,
+ udev,
 Description: DBus service for haptic/visual/audio feedback
  Feedbackd is a DBus activated daemon that provides haptic/
  visual/audio feedback based on events selected from configurable
