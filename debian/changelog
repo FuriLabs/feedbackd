@@ -1,8 +1,9 @@
-feedbackd (0.8.1-1) UNRELEASED; urgency=medium
+feedbackd (0.8.1-1) unstable; urgency=medium
 
-  * New upstream release
+  * New upstream bugfix release
+  * Recommend feedbackd-device-themes and udev
 
- -- Guido Günther <agx@sigxcpu.org>  Sun, 30 Mar 2025 16:59:20 +0200
+ -- Guido Günther <agx@sigxcpu.org>  Sun, 30 Mar 2025 17:01:44 +0200
 
 feedbackd (0.8.0-1) unstable; urgency=medium
 
