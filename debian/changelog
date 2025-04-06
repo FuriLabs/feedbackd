@@ -1,3 +1,16 @@
+feedbackd (0.8.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Guido Günther <agx@sigxcpu.org>  Fri, 21 Mar 2025 20:29:08 +0100
+
+feedbackd (0.7.0-2) unstable; urgency=medium
+
+  * wrap-and-sort and check that in CI
+  * Depend on adduser (Closes: 1100355)
+
+ -- Guido Günther <agx@sigxcpu.org>  Fri, 21 Mar 2025 09:45:27 +0100
+
 feedbackd (0.7.0-1) unstable; urgency=medium
 
   * New upstream release
