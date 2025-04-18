@@ -49,12 +49,12 @@ static gboolean
 fbd_droid_vibra_backend_sysfs_on (FbdDroidVibraBackend *backend, int duration)
 {
   // Some devices need a bigger duration than what feedbackd gives
-  if (g_file_test ("/usr/lib/droidian/device/vibrator-sysfs-multiplier", G_FILE_TEST_EXISTS)) {
+  if (g_file_test ("/usr/lib/furios/device/vibrator-sysfs-multiplier", G_FILE_TEST_EXISTS)) {
     gchar *content = NULL;
     gsize length = 0;
     GError *error = NULL;
 
-    if (g_file_get_contents ("/usr/lib/droidian/device/vibrator-sysfs-multiplier", &content, &length, &error)) {
+    if (g_file_get_contents ("/usr/lib/furios/device/vibrator-sysfs-multiplier", &content, &length, &error)) {
       int multiplier = atoi (content);
 
       duration = duration * multiplier;
@@ -77,7 +77,7 @@ fbd_droid_vibra_backend_sysfs_on (FbdDroidVibraBackend *backend, int duration)
 static gboolean
 fbd_droid_vibra_backend_sysfs_off (FbdDroidVibraBackend *backend)
 {
-  if (g_file_test ("/usr/lib/droidian/device/vibrator-sysfs-multiplier", G_FILE_TEST_EXISTS))
+  if (g_file_test ("/usr/lib/furios/device/vibrator-sysfs-multiplier", G_FILE_TEST_EXISTS))
     g_usleep (50000);
 
   return write_to_sysfs (SYSFS_ACTIVATE_NODE, "0");

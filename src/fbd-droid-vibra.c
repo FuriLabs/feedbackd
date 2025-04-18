@@ -105,7 +105,7 @@ initable_init (GInitable     *initable,
   g_debug ("initializing droid vibra");
 
   // Some devices cannot use either hidl or aidl backends, but sysfs works fine for them
-  if (g_file_test ("/usr/lib/droidian/device/vibrator-sysfs", G_FILE_TEST_EXISTS)) {
+  if (g_file_test ("/usr/lib/furios/device/vibrator-sysfs", G_FILE_TEST_EXISTS)) {
     self->backend = (FbdDroidVibraBackend *) fbd_droid_vibra_backend_sysfs_new (error);
     if (!self->backend) {
       g_set_error (error,

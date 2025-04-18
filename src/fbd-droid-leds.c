@@ -53,7 +53,7 @@ initable_init (GInitable     *initable,
 
   g_debug ("initializing droid leds");
 
-  if (g_file_test ("/usr/lib/droidian/device/leds-sysfs", G_FILE_TEST_EXISTS)) {
+  if (g_file_test ("/usr/lib/furios/device/leds-sysfs", G_FILE_TEST_EXISTS)) {
     self->backend = (FbdDroidLedsBackend *) fbd_droid_leds_backend_sysfs_new (error);
     if (!self->backend) {
       g_set_error (error,
