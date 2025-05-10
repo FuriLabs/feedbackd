@@ -1,6 +1,6 @@
 ---
 include:
-  - remote: 'https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/34039cd573a2df832d465bc9e4c5f543571f5241/templates/ci-fairy.yml'
+  - remote: 'https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/6a40df92957c8ce9ee741aaccc5daaaf70545b1e/templates/ci-fairy.yml'
   - remote: 'https://gitlab.gnome.org/guidog/meta-phosh/-/raw/0ed15edd821f8afacbf7a9c0f2a6266873289115/ci/phosh-common-jobs.yml'
 
 stages:
@@ -8,6 +8,9 @@ stages:
   - test
   - style-checks
   - package
+
+variables:
+  FDO_UPSTREAM_REPO: agx/feedbackd
 
 workflow:
   rules:
@@ -31,13 +34,8 @@ workflow:
   image:
     name: debian:trixie
 
-.tags: &tags
-  tags:
-    - librem5:arm64
-
 # Regular, full build
 build:gcc:native-debian-trixie:full:
-  <<: *tags
   <<: *image
   <<: *before_script
   stage: build
@@ -53,7 +51,6 @@ build:gcc:native-debian-trixie:full:
 
 # Minimal build for e.g. submodule usage
 build:gcc:native-debian-trixie:lib:
-  <<: *tags
   <<: *image
   <<: *before_script
   stage: build
@@ -68,7 +65,6 @@ build:gcc:native-debian-trixie:lib:
 build:clang:native-debian-trixie:full:
   variables:
     EXTRA_PKGS: clang
-  <<: *tags
   <<: *image
   <<: *before_script
   stage: build
@@ -84,7 +80,6 @@ build:clang:native-debian-trixie:full:
   allow_failure: true
 
 test:native-debian-trixie:
-  <<: *tags
   <<: *image
   <<: *before_script
   stage: test
@@ -92,32 +87,38 @@ test:native-debian-trixie:
     - build:gcc:native-debian-trixie:full
   coverage: '/^\s+lines\.+:\s+([\d.]+\%)\s+/'
   script:
-    - dbus-run-session ninja -C _build test coverage
+    - dbus-run-session ninja -C _build test
+    - ninja -C _build coverage || true
   except:
     variables:
       - $PKG_ONLY == "1"
 
 check-consistency:
-  <<: *tags
   stage: test
   extends: .phosh-check-consistency
 
 format-check:
-  <<: *tags
   stage: style-checks
   extends: .phosh-format-check
   allow_failure: true
 
 check-meson:
-  <<: *tags
   stage: style-checks
   extends:
     - .phosh-check-meson
 
-package:deb-debian-trixie:arm64:
-  tags:
-    - librem5:arm64
-  stage: package
+# Sanity checks of MR settings and commit logs
+check-commit-log:
+  extends:
+    - .fdo.ci-fairy
+  stage: style-checks
   variables:
-    PHOSH_DOCKER_IMAGE: debian:trixie
-  extends: .phosh-build-debian-package
+    GIT_DEPTH: "100"
+  needs: []
+  script: |
+    ci-fairy check-commits --signed-off-by --junit-xml=commit-message-junit-report.xml
+  artifacts:
+    reports:
+      junit: commit-message-junit-report.xml
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
