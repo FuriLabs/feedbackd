@@ -6,7 +6,6 @@ Depends:
  pkg-config,
 Restrictions:
  allow-stderr,
- superficial,
 
 Test-Command: python3 -c 'import gi; from gi.repository import Lfb'
 Depends:
@@ -15,11 +14,15 @@ Depends:
  python3-gi,
 Restrictions:
  allow-stderr,
- superficial,
 
 Test-Command: fbd-theme-validate /usr/share/feedbackd/themes/default.json
 Depends:
  feedbackd,
 Restrictions:
  allow-stderr,
- superficial,
+
+Test-Command: dbus-run-session fbcli -I -t 1 && fbcli --help
+Depends:
+ feedbackd,
+Restrictions:
+ allow-stderr,

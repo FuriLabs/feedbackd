@@ -1,5 +1,7 @@
 /*
  * Copyright (C) 2020 Purism SPC
+ *               2025 The Phosh Developers
+ *
  * SPDX-License-Identifier: GPL-3.0+
  * Author: Guido Günther <agx@sigxcpu.org>
  *
@@ -34,6 +36,7 @@ typedef struct _FbdDevLedPrivate {
   GUdevDevice        *dev;
   guint               max_brightness;
 
+  int                 priority;
   FbdFeedbackLedColor color;
 } FbdDevLedPrivate;
 
@@ -50,8 +53,17 @@ fbd_dev_led_probe_default (FbdDevLed *led, GError **error)
   FbdDevLedPrivate *priv = fbd_dev_led_get_instance_private (led);
   const gchar *name, *path;
   gboolean success = FALSE;
+  const char *pattern;
 
   name = g_udev_device_get_name (priv->dev);
+  pattern = g_udev_device_get_sysfs_attr (priv->dev, LED_PATTERN_ATTR);
+  if (!pattern) {
+    g_set_error (error,
+                 G_FILE_ERROR, G_FILE_ERROR_FAILED,
+                 "LED %s can't use patterns", name);
+    return FALSE;
+  }
+
   for (int i = 0; i <= FBD_FEEDBACK_LED_COLOR_RGB; i++) {
     g_autofree char *color = NULL;
     g_autofree char *enum_name = NULL;
@@ -115,25 +127,31 @@ fbd_dev_led_start_periodic_default (FbdDevLed *led,
                                     guint      freq)
 {
   FbdDevLedPrivate *priv;
-  g_autoptr (GError) err = NULL;
-  g_autofree gchar *str = NULL;
   gboolean success = FALSE;
   gdouble max;
-  gdouble t;
 
   g_return_val_if_fail (FBD_IS_DEV_LED (led), FALSE);
   g_return_val_if_fail (max_brightness_percentage <= 100, FALSE);
   priv = fbd_dev_led_get_instance_private (led);
 
   max =  priv->max_brightness * (max_brightness_percentage / 100.0);
-  /*  ms     mHz           T/2 */
-  t = 1000.0 * 1000.0 / freq / 2.0;
-  str = g_strdup_printf ("0 %d %d %d\n", (gint)t, (gint)max, (gint)t);
-  g_debug ("Freq %d mHz, Brightness: %d%%, Blink pattern: %s", freq, max_brightness_percentage, str);
+  if (freq) {
+    g_autofree gchar *str = NULL;
+    g_autoptr (GError) err = NULL;
+    gdouble t;
 
-  success = fbd_udev_set_sysfs_path_attr_as_string (priv->dev, LED_PATTERN_ATTR, str, &err);
-  if (!success)
-    g_warning ("Failed to set led pattern: %s", err->message);
+    /*  ms     mHz           T/2 */
+    t = 1000.0 * 1000.0 / freq / 2.0;
+    str = g_strdup_printf ("0 %d %d %d\n", (gint)t, (gint)max, (gint)t);
+    g_debug ("Freq %d mHz, Brightness: %d%%, Blink pattern: %s", freq, max_brightness_percentage,
+             str);
+    success = fbd_udev_set_sysfs_path_attr_as_string (priv->dev, LED_PATTERN_ATTR, str, &err);
+    if (!success)
+      g_warning ("Failed to set led pattern: %s", err->message);
+  } else {
+    g_debug ("Constant light, Brightness: %d%%", max_brightness_percentage);
+    success = fbd_dev_led_set_brightness (led, (gint)max);
+  }
 
   return success;
 }
@@ -236,6 +254,7 @@ fbd_dev_led_class_init (FbdDevLedClass *klass)
 static void
 fbd_dev_led_init (FbdDevLed *self)
 {
+  fbd_dev_led_set_priority (self, 10);
 }
 
 
@@ -347,4 +366,28 @@ fbd_dev_led_set_max_brightness (FbdDevLed *led, guint max_brightness)
   priv = fbd_dev_led_get_instance_private (led);
 
   priv->max_brightness = max_brightness;
+}
+
+
+int
+fbd_dev_led_get_priority (FbdDevLed *self)
+{
+  FbdDevLedPrivate *priv;
+
+  g_return_val_if_fail (FBD_IS_DEV_LED (self), 0);
+  priv = fbd_dev_led_get_instance_private (self);
+
+  return priv->priority;
+}
+
+
+void
+fbd_dev_led_set_priority (FbdDevLed *self, int priority)
+{
+  FbdDevLedPrivate *priv;
+
+  g_return_if_fail (FBD_IS_DEV_LED (self));
+  priv = fbd_dev_led_get_instance_private (self);
+
+  priv->priority = priority;
 }

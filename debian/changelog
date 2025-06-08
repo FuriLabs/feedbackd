@@ -1,3 +1,17 @@
+feedbackd (0.8.2-1) unstable; urgency=medium
+
+  * New upstream bugfix release
+  * Add fbcli autopkgtest.
+
+ -- Guido Günther <agx@sigxcpu.org>  Sat, 10 May 2025 11:58:00 +0200
+
+feedbackd (0.8.1-1) unstable; urgency=medium
+
+  * New upstream bugfix release
+  * Recommend feedbackd-device-themes and udev
+
+ -- Guido Günther <agx@sigxcpu.org>  Sun, 30 Mar 2025 17:01:44 +0200
+
 feedbackd (0.8.0-1) unstable; urgency=medium
 
   * New upstream release
@@ -90,7 +104,7 @@ feedbackd (0.2.1-1) unstable; urgency=medium
 
 feedbackd (0.2.0-2) unstable; urgency=medium
 
-  * Upload to unstable 
+  * Upload to unstable
 
  -- Guido Günther <agx@sigxcpu.org>  Tue, 13 Jun 2023 14:56:58 +0200
 

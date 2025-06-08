@@ -57,6 +57,13 @@ fbd_dev_led_multicolor_probe (FbdDevLed *led, GError **error)
     return FALSE;
   }
 
+  if (g_strv_length ((GStrv)index) != 3) {
+    g_set_error (error,
+                 G_FILE_ERROR, G_FILE_ERROR_FAILED,
+                 "%s is no multicolor RGB LED", name);
+    return FALSE;
+  }
+
   max_brightness = g_udev_device_get_sysfs_attr_as_int (dev, LED_MAX_BRIGHTNESS_ATTR);
   if (!max_brightness) {
     g_set_error (error,
@@ -188,6 +195,7 @@ fbd_dev_led_multicolor_class_init (FbdDevLedMulticolorClass *klass)
 static void
 fbd_dev_led_multicolor_init (FbdDevLedMulticolor *self)
 {
+  fbd_dev_led_set_priority (FBD_DEV_LED (self), 50);
 }
 
 
