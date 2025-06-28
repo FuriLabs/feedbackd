@@ -1,8 +1,9 @@
-feedbackd (0.8.3-1) UNRELEASED; urgency=medium
+feedbackd (0.8.3-1) unstable; urgency=medium
 
   * New upstream release
+    * Add more haptic driver rules based on what pmOS added over time
 
- -- Guido Günther <agx@sigxcpu.org>  Sat, 28 Jun 2025 09:50:12 +0200
+ -- Guido Günther <agx@sigxcpu.org>  Sat, 28 Jun 2025 09:51:19 +0200
 
 feedbackd (0.8.2-1) unstable; urgency=medium
 
