@@ -1,5 +1,6 @@
-feedbackd (0.8.3-1) unstable; urgency=medium
+feedbackd (0.8.3-1) experimental; urgency=medium
 
+  * Upload to experimental
   * New upstream release
     * Add more haptic driver rules based on what pmOS added over time
 
