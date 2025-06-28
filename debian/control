@@ -27,7 +27,7 @@ Build-Depends:
  umockdev,
  valac,
 Standards-Version: 4.7.2
-Homepage: https://source.puri.sm/Librem5/feedbackd
+Homepage: https://gitlab.freedesktop.org/agx/feedbackd
 Vcs-Browser: https://salsa.debian.org/DebianOnMobile-team/feedbackd
 Vcs-Git: https://salsa.debian.org/DebianOnMobile-team/feedbackd.git
 Rules-Requires-Root: no
