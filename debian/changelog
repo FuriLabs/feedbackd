@@ -1,8 +1,14 @@
-feedbackd (0.8.4-1) UNRELEASED; urgency=medium
+feedbackd (0.8.4-1) experimental; urgency=medium
 
   * New upstream release
+    * Support LEDs with legacy naming as used on e.g. the N900 and
+      Motorola Droid 4
+    * Add `key-pressed` and `key-released` events that e.g. OSKs can
+      use to emit haptic feedback in silent mode
+  * d/control: Bump f-d-t dependency.
+    We want it to have `key-*` events
 
- -- Guido Günther <agx@sigxcpu.org>  Thu, 07 Aug 2025 09:11:48 +0200
+ -- Guido Günther <agx@sigxcpu.org>  Thu, 07 Aug 2025 09:13:55 +0200
 
 feedbackd (0.8.3-1) experimental; urgency=medium
 
