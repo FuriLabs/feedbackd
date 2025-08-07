@@ -1,3 +1,9 @@
+feedbackd (0.8.4-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Guido Günther <agx@sigxcpu.org>  Thu, 07 Aug 2025 09:11:48 +0200
+
 feedbackd (0.8.3-1) experimental; urgency=medium
 
   * Upload to experimental
