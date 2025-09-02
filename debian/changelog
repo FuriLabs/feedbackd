@@ -1,3 +1,29 @@
+feedbackd (0.8.4-2) unstable; urgency=medium
+
+  * Upload to unstable
+
+ -- Guido Günther <agx@sigxcpu.org>  Sat, 09 Aug 2025 12:30:32 +0200
+
+feedbackd (0.8.4-1) experimental; urgency=medium
+
+  * New upstream release
+    * Support LEDs with legacy naming as used on e.g. the N900 and
+      Motorola Droid 4
+    * Add `key-pressed` and `key-released` events that e.g. OSKs can
+      use to emit haptic feedback in silent mode
+  * d/control: Bump f-d-t dependency.
+    We want it to have `key-*` events
+
+ -- Guido Günther <agx@sigxcpu.org>  Thu, 07 Aug 2025 09:13:55 +0200
+
+feedbackd (0.8.3-1) experimental; urgency=medium
+
+  * Upload to experimental
+  * New upstream release
+    * Add more haptic driver rules based on what pmOS added over time
+
+ -- Guido Günther <agx@sigxcpu.org>  Sat, 28 Jun 2025 09:51:19 +0200
+
 feedbackd (0.8.2-1) unstable; urgency=medium
 
   * New upstream bugfix release

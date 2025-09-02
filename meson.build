@@ -1,7 +1,7 @@
 project(
   'feedbackd',
   'c',
-  version: '0.8.2',
+  version: '0.8.4',
   license: 'LGPLv3+',
   meson_version: '>= 1.0.0',
   default_options: ['warning_level=1', 'buildtype=debugoptimized', 'c_std=gnu11'],
@@ -105,8 +105,6 @@ libname = 'libfeedback-' + apiversion
 
 json_glib_validate = find_program('json-glib-validate', required: false)
 
-meson.add_install_script(join_paths('build-aux', 'post_install.py'), datadir)
-
 subdir('data')
 subdir('libfeedback')
 subdir('src')
@@ -130,3 +128,5 @@ summary = [
   '',
 ]
 message('\n'.join(summary))
+
+gnome.post_install(glib_compile_schemas: true)

@@ -5,6 +5,7 @@ Source: https://source.puri.sm/Librem5/feedbackd
 
 Files: *
 Copyright: 2020 Purism SPC
+           2024-2025 The Phosh Developers
 License: GPL-3+
 
 Files: debian/*
@@ -13,12 +14,9 @@ Copyright:
  2020 Arnaud Ferraris <arnaud.ferraris@gmail.com>
 License: GPL-3+
 
-Files: debian/feedbackd.udev
-Copyright: 2020 Purism SPC
-License: LGPL-2.1+
-
 Files: libfeedback/*
 Copyright: 2020 Purism SPC
+           2023-2025 The Phosh Developers
 License: LGPL-2.1+
 
 License: GPL-3+
