@@ -1,12 +1,18 @@
-feedbackd (0.8.5-1) UNRELEASED; urgency=medium
+feedbackd (0.8.5-1) unstable; urgency=medium
 
   * New upstream release
+    * Clarify that `important` is meant to override the global app level
+    * Add udev rule for FP5 haptic
 
- -- Guido Günther <agx@sigxcpu.org>  Tue, 30 Sep 2025 19:49:51 +0200
+ -- Guido Günther <agx@sigxcpu.org>  Tue, 30 Sep 2025 20:06:24 +0200
 
 feedbackd (0.8.4-2) unstable; urgency=medium
 
   * Upload to unstable
+    * Support LEDs with legacy naming as used on e.g. the N900 and
+      Motorola Droid 4
+    * Add `key-pressed` and `key-released` events that e.g. OSKs can
+      use to emit haptic feedback in silent mode
 
  -- Guido Günther <agx@sigxcpu.org>  Sat, 09 Aug 2025 12:30:32 +0200
 
