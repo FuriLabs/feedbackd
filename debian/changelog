@@ -1,7 +1,8 @@
 feedbackd (0.8.5-1) unstable; urgency=medium
 
   * New upstream release
-    * Clarify that `important` is meant to override the global app level
+    * Clarify that `important` is meant to override the global feedback level
+      not the app level
     * Add udev rule for FP5 haptic
 
  -- Guido Günther <agx@sigxcpu.org>  Tue, 30 Sep 2025 20:06:24 +0200
