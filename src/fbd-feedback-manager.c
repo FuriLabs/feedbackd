@@ -388,7 +388,7 @@ parse_hints (GVariant                *hints,
 /**
  * add_event_feedbacks:
  *
- * Add the suitable feedacks to the event.
+ * Add the suitable feedbacks to the event.
  *
  * Returns: `TRUE` if at least on feedback was added.
  */
@@ -775,10 +775,11 @@ fbd_feedback_manager_get_effective_level (FbdFeedbackManager      *self,
   app_level = app_get_feedback_level (app_id);
   can_important = app_is_important (self, app_id);
 
-  if (important && can_important)
-    level = want_level;
-  else
+  if (important && can_important) {
+    level = MIN (want_level, app_level);
+  } else {
     level = get_max_level (self->level, app_level, want_level);
+  }
 
   return level;
 }
