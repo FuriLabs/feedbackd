@@ -1,8 +1,9 @@
-feedbackd (0.8.7-1) UNRELEASED; urgency=medium
+feedbackd (0.8.7-1) unstable; urgency=medium
 
   * New upstream release
+    * Add build time option for media roles (not yet enabled in Debian)
 
- -- Guido Günther <agx@sigxcpu.org>  Sun, 16 Nov 2025 16:19:10 +0100
+ -- Guido Günther <agx@sigxcpu.org>  Sun, 16 Nov 2025 16:22:45 +0100
 
 feedbackd (0.8.6-1) unstable; urgency=medium
 
