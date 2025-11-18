@@ -13,7 +13,6 @@ Build-Depends:
  gir1.2-gio-2.0-dev,
  gsettings-desktop-schemas <!nocheck>,
  json-glib-tools,
- libgirepository1.0-dev,
  libglib2.0-dev,
  libgmobile-dev,
  libgsound-dev,
