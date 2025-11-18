@@ -94,7 +94,6 @@ Depends:
  libfeedback-0.0-0 (= ${binary:Version}),
  libglib2.0-dev,
  ${misc:Depends},
- ${shlibs:Depends},
 Description: Development files for libfeedback
  Feedbackd is a DBus activated daemon that provides haptic/
  visual/audio feedback based on events selected from configurable
@@ -110,7 +109,6 @@ Section: introspection
 Depends:
  ${gir:Depends},
  ${misc:Depends},
- ${shlibs:Depends},
 Description: GObject introspection data for libfeedback
  Feedbackd is a DBus activated daemon that provides haptic/
  visual/audio feedback based on events selected from configurable
