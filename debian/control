@@ -9,7 +9,7 @@ Build-Depends:
  debhelper-compat (= 13),
  dh-sequence-gir,
  dh-sequence-installsysusers,
- dbus,
+ dbus-daemon <!nocheck>,
  gi-docgen <!nodoc>,
  gir1.2-gio-2.0-dev,
  gsettings-desktop-schemas <!nocheck>,
