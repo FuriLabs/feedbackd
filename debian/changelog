@@ -1,8 +1,16 @@
-feedbackd (0.8.8-1) UNRELEASED; urgency=medium
+feedbackd (0.8.8-1) unstable; urgency=medium
 
   * New upstream release
+    * Support haptic on Google Nexus 10, Samung Note 10.1
+    * Create users via systemd-sysusers
+    * Fix max brightness for LED patterns on multicolor LEDs
+  * Update upstream signing key
+  * d/copyright: Fix upstream URL
+  * Use dh-sequence-installsysusers
+  * postinst: Trigger input events too.
+    Needed for haptic
 
- -- Guido Günther <agx@sigxcpu.org>  Tue, 30 Dec 2025 15:00:57 +0100
+ -- Guido Günther <agx@sigxcpu.org>  Thu, 01 Jan 2026 16:36:06 +0100
 
 feedbackd (0.8.7-1) unstable; urgency=medium
 
