@@ -8,12 +8,12 @@ Uploaders:
 Build-Depends:
  debhelper-compat (= 13),
  dh-sequence-gir,
- dbus,
+ dh-sequence-installsysusers,
+ dbus-daemon <!nocheck>,
  gi-docgen <!nodoc>,
  gir1.2-gio-2.0-dev,
  gsettings-desktop-schemas <!nocheck>,
  json-glib-tools,
- libgirepository1.0-dev,
  libglib2.0-dev,
  libgmobile-dev,
  libgsound-dev,
@@ -32,7 +32,6 @@ Standards-Version: 4.7.2
 Homepage: https://gitlab.freedesktop.org/agx/feedbackd
 Vcs-Browser: https://salsa.debian.org/DebianOnMobile-team/feedbackd
 Vcs-Git: https://salsa.debian.org/DebianOnMobile-team/feedbackd.git
-Rules-Requires-Root: no
 
 Package: feedbackd
 Architecture: any
@@ -97,7 +96,6 @@ Depends:
  libfeedback-0.0-0 (= ${binary:Version}),
  libglib2.0-dev,
  ${misc:Depends},
- ${shlibs:Depends},
 Description: Development files for libfeedback
  Feedbackd is a DBus activated daemon that provides haptic/
  visual/audio feedback based on events selected from configurable
@@ -113,7 +111,6 @@ Section: introspection
 Depends:
  ${gir:Depends},
  ${misc:Depends},
- ${shlibs:Depends},
 Description: GObject introspection data for libfeedback
  Feedbackd is a DBus activated daemon that provides haptic/
  visual/audio feedback based on events selected from configurable

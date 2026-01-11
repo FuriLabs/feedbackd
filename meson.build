@@ -1,9 +1,9 @@
 project(
   'feedbackd',
   'c',
-  version: '0.8.6',
+  version: '0.8.8',
   license: 'LGPLv3+',
-  meson_version: '>= 1.0.0',
+  meson_version: '>= 1.1.0',
   default_options: ['warning_level=1', 'buildtype=debugoptimized', 'c_std=gnu11'],
 )
 
@@ -42,6 +42,7 @@ if udev.found() and get_option('daemon')
 else
   udevdir = prefix / 'lib' / 'udev' / 'rules.d'
 endif
+wireplumberdir = datadir / 'wireplumber' / 'wireplumber.conf.d'
 
 run_data = configuration_data()
 run_data.set('ABS_BUILDDIR', meson.current_build_dir())
@@ -124,6 +125,7 @@ summary = [
   '  Introspection: @0@'.format(introspection),
   '           Vapi: @0@'.format(get_option('vapi')),
   '          Tests: @0@'.format(get_option('tests')),
+  '    Media Roles: @0@'.format(get_option('media-roles')),
   '---------------',
   '',
 ]

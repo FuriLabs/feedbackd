@@ -1,3 +1,31 @@
+feedbackd (0.8.8-2) unstable; urgency=medium
+
+  * Depend on dbus-daemon only.
+    It's sufficient for the tests (Closes: #1122591)
+
+ -- Guido Günther <agx@sigxcpu.org>  Mon, 05 Jan 2026 22:09:03 +0100
+
+feedbackd (0.8.8-1) unstable; urgency=medium
+
+  * New upstream release
+    * Support haptic on Google Nexus 10, Samung Note 10.1
+    * Create users via systemd-sysusers
+    * Fix max brightness for LED patterns on multicolor LEDs
+  * Update upstream signing key
+  * d/copyright: Fix upstream URL
+  * Use dh-sequence-installsysusers
+  * postinst: Trigger input events too.
+    Needed for haptic
+
+ -- Guido Günther <agx@sigxcpu.org>  Thu, 01 Jan 2026 16:36:06 +0100
+
+feedbackd (0.8.7-1) unstable; urgency=medium
+
+  * New upstream release
+    * Add build time option for media roles (not yet enabled in Debian)
+
+ -- Guido Günther <agx@sigxcpu.org>  Sun, 16 Nov 2025 16:22:45 +0100
+
 feedbackd (0.8.6-1) unstable; urgency=medium
 
   * New upstream release
