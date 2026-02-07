@@ -1,8 +1,13 @@
-feedbackd (0.8.9-1) UNRELEASED; urgency=medium
+feedbackd (0.8.9-1) unstable; urgency=medium
 
   * New upstream release
+    * Improve docs
+    * Add custom theme example
+    * udev: Match LED on devices with multiple status LEDs
+    * Simplify using media roles via build profile
+    * theme: Fix window-close event name
 
- -- Guido Günther <agx@sigxcpu.org>  Sat, 07 Feb 2026 08:33:21 +0100
+ -- Guido Günther <agx@sigxcpu.org>  Sat, 07 Feb 2026 08:34:44 +0100
 
 feedbackd (0.8.8-2) unstable; urgency=medium
 
