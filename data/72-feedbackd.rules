@@ -50,6 +50,11 @@ SUBSYSTEM=="leds", DEVPATH=="*/lp5523:r", ENV{FEEDBACKD_LED_COLOR}="red", ENV{FE
 SUBSYSTEM=="leds", DEVPATH=="*/lp5523:g", ENV{FEEDBACKD_LED_COLOR}="green", ENV{FEEDBACKD_TYPE}="led", RUN{builtin}+="kmod load ledtrig-pattern", RUN+="/usr/libexec/fbd-ledctrl -p %S%p -t pattern -G feedbackd"
 SUBSYSTEM=="leds", DEVPATH=="*/lp5523:b", ENV{FEEDBACKD_LED_COLOR}="blue", ENV{FEEDBACKD_TYPE}="led", RUN{builtin}+="kmod load ledtrig-pattern", RUN+="/usr/libexec/fbd-ledctrl -p %S%p -t pattern -G feedbackd"
 
+# RGB indicator LEDs
+SUBSYSTEM=="leds", KERNEL=="red", ENV{FEEDBACKD_LED_COLOR}="red", ENV{FEEDBACKD_TYPE}="led", TAG+="uaccess"
+SUBSYSTEM=="leds", KERNEL=="green", ENV{FEEDBACKD_LED_COLOR}="green", ENV{FEEDBACKD_TYPE}="led", TAG+="uaccess"
+SUBSYSTEM=="leds", KERNEL=="blue", ENV{FEEDBACKD_LED_COLOR}="blue", ENV{FEEDBACKD_TYPE}="led", TAG+="uaccess"
+
 #
 # Alert sliders
 #
