@@ -15,6 +15,7 @@
 #include "fbd-dev-led-multicolor.h"
 #include "fbd-dev-led-qcom.h"
 #include "fbd-dev-led-qcom-multicolor.h"
+#include "fbd-dev-led-brightness.h"
 #include "fbd-dev-leds.h"
 #include "fbd-feedback-led.h"
 #include "fbd-udev.h"
@@ -95,6 +96,13 @@ probe_led (GUdevDevice *dev, GError **error) {
   led = fbd_dev_led_flash_new (dev, error);
   if (led != NULL) {
     g_debug ("Discovered flash LED");
+    return led;
+  }
+  g_clear_error (error);
+
+  led = fbd_dev_led_brightness_new (dev, error);
+  if (led != NULL) {
+    g_debug ("Discovered brightness-only LED");
     return led;
   }
   g_clear_error (error);
