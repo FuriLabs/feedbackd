@@ -10,6 +10,7 @@
 #define G_LOG_DOMAIN "fbd-dev-vibra"
 
 #include "fbd-dev-vibra.h"
+#include "fbd-dev-vibra-sysfs.h"
 
 #include <gio/gio.h>
 
@@ -42,6 +43,11 @@ typedef enum {
   FBD_DEV_VIBRA_FEATURE_GAIN,
 } FbdDevVibraFeatureFlags;
 
+typedef enum {
+  FBD_DEV_VIBRA_BACKEND_FF,
+  FBD_DEV_VIBRA_BACKEND_SYSFS,
+} FbdDevVibraBackend;
+
 typedef struct _FbdDevVibra {
   GObject parent;
 
@@ -50,6 +56,8 @@ typedef struct _FbdDevVibra {
   gint id; /* currently used id */
 
   FbdDevVibraFeatureFlags features;
+  FbdDevVibraBackend backend;
+  FbdDevVibraSysfs sysfs;
 } FbdDevVibra;
 
 static void initable_iface_init (GInitableIface *iface);
@@ -101,9 +109,22 @@ initable_init (GInitable     *initable,
                GError       **error)
 {
   FbdDevVibra *self = FBD_DEV_VIBRA (initable);
-  const char *filename = g_udev_device_get_device_file (self->device);
+  const char *filename = NULL;
+  const char *subsystem;
   gulong features[1 + FF_MAX/BITS_PER_LONG];
   struct input_event gain = { 0 };
+
+  subsystem = g_udev_device_get_subsystem (self->device);
+
+  if (g_strcmp0 (subsystem, "leds") == 0) {
+    if (!fbd_dev_vibra_sysfs_init (&self->sysfs, self->device, error))
+      return FALSE;
+
+    self->backend = FBD_DEV_VIBRA_BACKEND_SYSFS;
+    return TRUE;
+  }
+
+  filename = g_udev_device_get_device_file (self->device);
 
   self->fd = open (filename, O_RDWR | O_NONBLOCK, O_RDWR);
   if (self->fd < 0) {
@@ -161,6 +182,7 @@ initable_init (GInitable     *initable,
     g_debug ("Gain unsupported");
   }
 
+  self->backend = FBD_DEV_VIBRA_BACKEND_FF;
   g_debug ("Vibra device at '%s' usable", filename);
   return TRUE;
 }
@@ -177,6 +199,7 @@ fbd_dev_vibra_dispose (GObject *object)
   FbdDevVibra *self = FBD_DEV_VIBRA (object);
 
   g_clear_object (&self->device);
+  fbd_dev_vibra_sysfs_clear (&self->sysfs);
 
   G_OBJECT_CLASS (fbd_dev_vibra_parent_class)->dispose (object);
 }
@@ -219,7 +242,9 @@ fbd_dev_vibra_class_init (FbdDevVibraClass *klass)
 static void
 fbd_dev_vibra_init (FbdDevVibra *self)
 {
+  self->fd = -1;
   self->id = -1;
+  self->backend = FBD_DEV_VIBRA_BACKEND_FF;
 }
 
 FbdDevVibra *
@@ -239,6 +264,9 @@ fbd_dev_vibra_rumble (FbdDevVibra *self, double magnitude, guint duration, gbool
   struct ff_effect effect = { 0 };
 
   g_return_val_if_fail (FBD_IS_DEV_VIBRA (self), FALSE);
+
+  if (self->backend == FBD_DEV_VIBRA_BACKEND_SYSFS)
+    return fbd_dev_vibra_sysfs_rumble (&self->sysfs, magnitude, duration);
 
   memset(&effect, 0, sizeof(effect));
   effect.type = FF_RUMBLE;
@@ -283,6 +311,13 @@ fbd_dev_vibra_periodic (FbdDevVibra *self,
 
   g_return_val_if_fail (FBD_IS_DEV_VIBRA (self), FALSE);
 
+  if (self->backend == FBD_DEV_VIBRA_BACKEND_SYSFS)
+    return fbd_dev_vibra_sysfs_periodic (&self->sysfs,
+                                         duration,
+                                         magnitude,
+                                         fade_in_level,
+                                         fade_in_time);
+
   effect.type = FF_PERIODIC;
   effect.id = -1;
   effect.u.periodic.waveform = FF_SINE;
@@ -325,6 +360,9 @@ fbd_dev_vibra_remove_effect (FbdDevVibra *self)
 {
   g_return_val_if_fail (FBD_IS_DEV_VIBRA (self), FALSE);
 
+  if (self->backend == FBD_DEV_VIBRA_BACKEND_SYSFS)
+    return fbd_dev_vibra_sysfs_remove_effect (&self->sysfs);
+
   if (self->id == -1)
     return TRUE;
 
@@ -345,6 +383,9 @@ fbd_dev_vibra_stop (FbdDevVibra *self)
   struct input_event stop = { 0 };
 
   g_return_val_if_fail (FBD_IS_DEV_VIBRA (self), FALSE);
+
+  if (self->backend == FBD_DEV_VIBRA_BACKEND_SYSFS)
+    return fbd_dev_vibra_sysfs_stop (&self->sysfs);
 
   if (self->id == -1)
     return TRUE;
@@ -384,6 +425,9 @@ fbd_dev_vibra_is_busy (FbdDevVibra *self)
     return FALSE;
 
   g_return_val_if_fail (FBD_IS_DEV_VIBRA (self), TRUE);
+
+  if (self->backend == FBD_DEV_VIBRA_BACKEND_SYSFS)
+    return fbd_dev_vibra_sysfs_is_busy (&self->sysfs);
 
   return self->id != -1;
 }

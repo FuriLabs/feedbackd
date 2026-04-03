@@ -15,6 +15,7 @@ if get_option('daemon')
     fbd_enum_sources,
     'fbd-error.c',
     'fbd-dev-vibra.c',
+    'fbd-dev-vibra-sysfs.c',
     'fbd-dev-sound.c',
     'fbd-dev-led.c',
     'fbd-dev-led-flash.c',

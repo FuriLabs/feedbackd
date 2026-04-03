@@ -160,6 +160,23 @@ init_devices (FbdFeedbackManager *self)
       }
     }
   }
+
+  g_clear_list (&devices, g_object_unref);
+  devices = g_udev_client_query_by_subsystem (self->client, "leds");
+
+  for (l = devices; l != NULL; l = l->next) {
+    GUdevDevice *dev = l->data;
+
+    if (!g_strcmp0 (g_udev_device_get_property (dev, FEEDBACKD_UDEV_ATTR), "vibra")) {
+      g_debug ("Found vibra device");
+      self->vibra = fbd_dev_vibra_new (dev, &err);
+      if (!self->vibra) {
+        g_warning ("Failed to init vibra device: %s", err->message);
+        g_clear_error (&err);
+      }
+    }
+  }
+
   if (!self->vibra)
     g_debug ("No vibra capable device found");
 
@@ -598,7 +615,7 @@ fbd_feedback_manager_class_init (FbdFeedbackManagerClass *klass)
 static void
 fbd_feedback_manager_init (FbdFeedbackManager *self)
 {
-  const gchar * const subsystems[] = { "input", NULL };
+  const gchar * const subsystems[] = { "input", "leds", NULL };
 
   self->next_id = 1;
   self->level = FBD_FEEDBACK_PROFILE_LEVEL_UNKNOWN;
