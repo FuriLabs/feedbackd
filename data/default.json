@@ -108,9 +108,10 @@
       "name" : "quiet",
       "feedbacks" : [
         {
-          "event-name" : "alarm-clock-elapsed",
-          "type"       : "Sound",
-          "effect"     : "alarm-clock-elapsed"
+          "event-name"   : "alarm-clock-elapsed",
+          "type"         : "VibraPeriodic",
+          "magnitude"    : 0.5,
+          "duration"     : 1000
         },
         {
           "event-name" : "bell-terminal",
@@ -202,11 +203,6 @@
     {
       "name" : "silent",
       "feedbacks" : [
-        {
-          "event-name" : "alarm-clock-elapsed",
-          "type"       : "Sound",
-          "effect"     : "alarm-clock-elapsed"
-        },
         {
           "event-name" : "battery-caution",
           "type"       : "Led",
